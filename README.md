@@ -1,4 +1,6 @@
 ShhApp
 ======
 
-Shh
+Shh! Keep your voice down!
+
+Coming Soon !
