@@ -1,0 +1,42 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity" >
+
+    <EditText
+        android:id="@+id/smsTextView"
+        android:layout_width="fill_parent"
+        android:layout_height="180dp"
+        android:hint="Enter your sms body"
+        android:imeActionLabel="launch" />
+
+    <Button
+        android:id="@+id/btnEmail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/btnSendEncrptSms"
+        android:layout_alignBottom="@+id/btnSendEncrptSms"
+        android:layout_marginLeft="16dp"
+        android:layout_toRightOf="@+id/btnSendEncrptSms"
+        android:text="Email" />
+
+    <Button
+        android:id="@+id/btnSendEncrptSms"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/smsTextView"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="80dp"
+        android:text="Encrypt" />
+
+    <Button
+        android:id="@+id/btnSendSms"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/btnSendEncrptSms"
+        android:layout_alignBottom="@+id/btnSendEncrptSms"
+        android:layout_alignParentLeft="true"
+        android:text="SendSms" />
+
+</RelativeLayout>
