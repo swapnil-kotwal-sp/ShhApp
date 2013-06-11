@@ -3,8 +3,6 @@ package com.example.shhapp;
 import java.math.BigInteger;
 import java.util.ArrayList;
 
-import com.google.analytics.tracking.android.EasyTracker;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
@@ -19,11 +17,14 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.google.analytics.tracking.android.EasyTracker;
+
 public class MainActivity extends Activity {
   BigInteger encrypt = null;
   BigInteger decrypt = null;
   EditText messageTxt;
   RSA key;
+
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -33,6 +34,8 @@ public class MainActivity extends Activity {
     Button encryptBtn = (Button) findViewById(R.id.btnEncrptSms);
     Button decryptBtn = (Button) findViewById(R.id.btnDecrypt);
     Button email = (Button) findViewById(R.id.btnEmail);
+    Button readSms = (Button) findViewById(R.id.btnReadSms);
+    final EncryptionUtility encryptionUtil = new EncryptionUtility();
     encryptBtn.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View arg0) {
@@ -48,25 +51,21 @@ public class MainActivity extends Activity {
     sendSMSButton.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View arg0) {
-         invokeSMSApp();
+        invokeSMSApp();
       }
     });
     email.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View arg0) {
-       sendEmail(); 
+        encryptionUtil.sendEmail(messageTxt.getText().toString());
       }
     });
-  }
-
-  public void sendLongSMS() {
-    String phoneNumber = "";
-    String message = "Hello World! Now we are going to demonstrate "
-      + "how to send a message with more than 160 characters from your Android application.";
-
-    SmsManager smsManager = SmsManager.getDefault();
-    ArrayList<String> parts = smsManager.divideMessage(message);
-    smsManager.sendMultipartTextMessage(phoneNumber, null, parts, null, null);
+    readSms.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View arg0) {
+        SMSRead();
+      }
+    });
   }
 
   public void invokeSMSApp() {
@@ -85,6 +84,7 @@ public class MainActivity extends Activity {
     while (cur.moveToNext()) {
       sms += "From :" + cur.getString(2) + " : " + cur.getString(11) + "\n";
     }
+    messageTxt.setText(sms);
     Log.i("sms", sms);
   }
 
@@ -96,17 +96,19 @@ public class MainActivity extends Activity {
   }
 
   private void decryptSMS() {
-    if(key != null){
-    decrypt = key.decrypt(encrypt);
-    messageTxt.setText(new String(decrypt.toByteArray()));
-    System.out.println("decrypted = " + decrypt);
-    System.out.println("after decrypt the message is "
-        + new String(decrypt.toByteArray()));
+    if (key != null) {
+      decrypt = key.decrypt(encrypt);
+      messageTxt.setText(new String(decrypt.toByteArray()));
+      System.out.println("decrypted = " + decrypt);
+      System.out.println("after decrypt the message is "
+          + new String(decrypt.toByteArray()));
     }
   }
- 
+
   private void encryptSMS() {
-   key = new RSA(1000);
+    if (key == null) {
+      key = new RSA(4000);
+    } 
     System.out.println(key);
     // create random message, encrypt.
     String s = messageTxt.getText().toString();
@@ -115,21 +117,9 @@ public class MainActivity extends Activity {
     System.out.println("message   = " + message);
     System.out.println("hexa dicimal form of message " + message.toString(16));
     System.out.println("encrpyted = " + encrypt);
-    messageTxt.setText(encrypt+"");
+    messageTxt.setText(encrypt + "");
   }
-  
-  public void sendEmail(){
-    AsyncTask<String, Void, Boolean> gMailSenderAsynTask = new GMailSenderAsynTask(
-        "ooyalatester@vertisinfotech.com", "!password*", "swapnil@vertisinfotech.com");
-    gMailSenderAsynTask.execute(messageTxt.getText().toString());
-    try {
-      if (!gMailSenderAsynTask.get()) {
-        Log.e("email", "password may not be correct");
-      }
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-  }
+
   @Override
   public void onStart() {
     super.onStart();
