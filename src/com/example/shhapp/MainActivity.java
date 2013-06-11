@@ -3,6 +3,8 @@ package com.example.shhapp;
 import java.math.BigInteger;
 import java.util.ArrayList;
 
+import com.google.analytics.tracking.android.EasyTracker;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
@@ -21,27 +23,32 @@ public class MainActivity extends Activity {
   BigInteger encrypt = null;
   BigInteger decrypt = null;
   EditText messageTxt;
-
+  RSA key;
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
     messageTxt = (EditText) findViewById(R.id.smsTextView);
     Button sendSMSButton = (Button) findViewById(R.id.btnSendSms);
-    Button encryptBtn = (Button) findViewById(R.id.btnSendEncrptSms);
+    Button encryptBtn = (Button) findViewById(R.id.btnEncrptSms);
+    Button decryptBtn = (Button) findViewById(R.id.btnDecrypt);
     Button email = (Button) findViewById(R.id.btnEmail);
     encryptBtn.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View arg0) {
-        // sendLongSMS();
         encryptSMS();
+      }
+    });
+    decryptBtn.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View arg0) {
+        decryptSMS();
       }
     });
     sendSMSButton.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View arg0) {
-        // sendLongSMS();
-        invokeSMSApp();
+         invokeSMSApp();
       }
     });
     email.setOnClickListener(new OnClickListener() {
@@ -88,21 +95,27 @@ public class MainActivity extends Activity {
     return true;
   }
 
+  private void decryptSMS() {
+    if(key != null){
+    decrypt = key.decrypt(encrypt);
+    messageTxt.setText(new String(decrypt.toByteArray()));
+    System.out.println("decrypted = " + decrypt);
+    System.out.println("after decrypt the message is "
+        + new String(decrypt.toByteArray()));
+    }
+  }
+ 
   private void encryptSMS() {
-    RSA key = new RSA(1000);
+   key = new RSA(1000);
     System.out.println(key);
-    // create random message, encrypt and decrypt
+    // create random message, encrypt.
     String s = messageTxt.getText().toString();
     BigInteger message = new BigInteger(s.getBytes());
     encrypt = key.encrypt(message);
-    decrypt = key.decrypt(encrypt);
     System.out.println("message   = " + message);
     System.out.println("hexa dicimal form of message " + message.toString(16));
     System.out.println("encrpyted = " + encrypt);
     messageTxt.setText(encrypt+"");
-    System.out.println("decrypted = " + decrypt);
-    System.out.println("after decrypt the message is "
-        + new String(decrypt.toByteArray()));
   }
   
   public void sendEmail(){
@@ -116,5 +129,18 @@ public class MainActivity extends Activity {
     } catch (Exception e) {
       e.printStackTrace();
     }
+  }
+  @Override
+  public void onStart() {
+    super.onStart();
+    // Initialise google analytics for this app.
+    EasyTracker.getInstance().activityStart(this); // Add this method.
+  }
+
+  @Override
+  public void onStop() {
+    super.onStop();
+    // The rest of your onStop() code.
+    EasyTracker.getInstance().activityStop(this); // Add this method.
   }
 }
