@@ -1,5 +1,8 @@
 package com.example.shhapp;
 
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
+
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -28,7 +31,11 @@ public class ShhActivity extends Activity {
     encryptBtn.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View arg0) {
-        messageUtil.encryptSMS();
+        try {
+          messageUtil.encryptSMS();
+        } catch (Exception e) {
+          e.printStackTrace();
+        } 
       }
     });
     decryptBtn.setOnClickListener(new OnClickListener() {

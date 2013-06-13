@@ -1,12 +1,13 @@
 package com.example.shhapp;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.telephony.SmsManager;
 import android.util.Log;
 import android.widget.EditText;
@@ -14,10 +15,7 @@ import android.widget.EditText;
 public class MessageUtil {
   private ShhActivity shhActivity;
   private EditText messageTxt;
-  private BigInteger encrypt = null;
-  private BigInteger decrypt = null;
-  private RSA key;
-
+  private RSAAsynckTask rsaTask = null;
   public MessageUtil(ShhActivity shhActivity) {
     this.shhActivity = shhActivity;
     messageTxt = shhActivity.messageTxt;
@@ -39,12 +37,12 @@ public class MessageUtil {
     shhActivity.startActivity(smsIntent);
   }
   public void sendEmail(String message) {
-    AsyncTask<String, Void, Boolean> gMailSenderAsynTask = new GMailSenderAsynTask(
+    GMailSenderAsynTask gMailSenderAsynTask = new GMailSenderAsynTask(
         "ooyalatester@vertisinfotech.com", "!password*",
-        "swapnil@vertisinfotech.com");
+        "swapnil@vertisinfotech.com",shhActivity);
     gMailSenderAsynTask.execute(message);
     try {
-      if (!gMailSenderAsynTask.get()) {
+      if (!gMailSenderAsynTask.get(5000, TimeUnit.MILLISECONDS)) {
         Log.e("email", "password may not be correct");
       }
     } catch (Exception e) {
@@ -68,28 +66,15 @@ public class MessageUtil {
     shhActivity.startActivity(intent);
   }
 
- public void encryptSMS() {
-    if (key == null) {
-      key = new RSA(4000);
-    } 
-    System.out.println(key);
-    // create random message, encrypt.
-    String s = messageTxt.getText().toString();
-    BigInteger message = new BigInteger(s.getBytes());
-    encrypt = key.encrypt(message);
-    System.out.println("message   = " + message);
-    System.out.println("hexa dicimal form of message " + message.toString(16));
-    System.out.println("encrpyted = " + encrypt);
-    messageTxt.setText(encrypt + "");
+ public void encryptSMS() throws InterruptedException, ExecutionException, TimeoutException {
+   rsaTask = new RSAAsynckTask(shhActivity);
+   rsaTask.execute(5000);
+   messageTxt.setText(rsaTask.get());
   }
   
   public void decryptSMS() {
-    if (key != null) {
-      decrypt = key.decrypt(encrypt);
-      messageTxt.setText(new String(decrypt.toByteArray()));
-      System.out.println("decrypted = " + decrypt);
-      System.out.println("after decrypt the message is "
-          + new String(decrypt.toByteArray()));
+    if (rsaTask != null) {
+      rsaTask.decryptSMS();
     }
   }
 }
