@@ -45,7 +45,11 @@ public class RSAAsynckTask extends AsyncTask<Integer, Boolean, String> {
     System.out.println("message   = " + message);
     System.out.println("hexa dicimal form of message " + message.toString(16));
     System.out.println("encrpyted = " + encrypt);
-//    messageTxt.setText(encrypt + "");
+    shhActivity.runOnUiThread(new Runnable() {
+      public void run() {
+        messageTxt.setText(encrypt + "");
+      }
+    });
     return encrypt+"";
   }
   

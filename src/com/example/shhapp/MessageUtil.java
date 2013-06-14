@@ -42,7 +42,7 @@ public class MessageUtil {
         "swapnil@vertisinfotech.com",shhActivity);
     gMailSenderAsynTask.execute(message);
     try {
-      if (!gMailSenderAsynTask.get(5000, TimeUnit.MILLISECONDS)) {
+      if (!gMailSenderAsynTask.get(8000, TimeUnit.MILLISECONDS)) {
         Log.e("email", "password may not be correct");
       }
     } catch (Exception e) {
@@ -69,7 +69,7 @@ public class MessageUtil {
  public void encryptSMS() throws InterruptedException, ExecutionException, TimeoutException {
    rsaTask = new RSAAsynckTask(shhActivity);
    rsaTask.execute(5000);
-   messageTxt.setText(rsaTask.get());
+   rsaTask.get(8000, TimeUnit.MILLISECONDS);
   }
   
   public void decryptSMS() {
