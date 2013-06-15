@@ -1,10 +1,13 @@
 package com.example.shhapp;
 
-import android.R.bool;
+import java.util.ArrayList;
+import java.util.List;
+
 import android.app.Activity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -16,11 +19,12 @@ import com.google.analytics.tracking.android.EasyTracker;
 public class ShhActivity extends Activity {
   EditText messageTxt;
   Button encryptBtn;
+  List<String> smsArray = new ArrayList<String>();
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
-    messageTxt = (EditText) findViewById(R.id.smsTextView);
+    messageTxt = (EditText) findViewById(R.id.viewSmsText);
     Button sendSMSButton = (Button) findViewById(R.id.btnSendSms);
     encryptBtn = (Button) findViewById(R.id.btnEncrptSms);
     encryptBtn.setEnabled(false);
@@ -73,7 +77,8 @@ public class ShhActivity extends Activity {
     readSms.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View arg0) {
-        messageUtil.SMSRead();
+        smsArray = messageUtil.SMSRead();
+        Log.i("smsArray",smsArray.toString());
       }
     });
     readMails.setOnClickListener(new OnClickListener() {

@@ -6,37 +6,48 @@
     tools:context=".MainActivity" >
 
     <LinearLayout
-        android:id="@+id/linearLayout1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
 
         <EditText
             android:id="@+id/viewSmsText"
             android:layout_width="0dp"
-            android:layout_height="200dp"
+            android:layout_height="100dp"
             android:layout_weight=".40"
             android:hint="Enter your sms body"
             android:imeActionLabel="launch" />
     </LinearLayout>
 
     <Button
-        android:id="@+id/btnDecrypt"
+        android:id="@+id/btnReadSms"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/btnEncrptSms"
-        android:layout_alignBottom="@+id/btnEncrptSms"
-        android:layout_alignLeft="@+id/btnEmail"
-        android:layout_alignRight="@+id/btnSendSms"
-        android:text="Decrypt"
+        android:layout_alignBaseline="@+id/btnSendSms"
+        android:layout_alignBottom="@+id/btnSendSms"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="26dp"
+        android:text="ReadSms"
+        android:textColor="#FF00FF" />
+
+    <Button
+        android:id="@+id/btnSendSms"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="21dp"
+        android:layout_marginLeft="27dp"
+        android:layout_toRightOf="@+id/btnReadSms"
+        android:text="SendSms"
         android:textColor="#FF00FF" />
 
     <Button
         android:id="@+id/btnReadEmail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/btnEmail"
-        android:layout_alignBottom="@+id/btnEmail"
-        android:layout_alignLeft="@+id/btnReadSms"
+        android:layout_alignBaseline="@+id/btnSendSms"
+        android:layout_alignBottom="@+id/btnSendSms"
+        android:layout_marginLeft="28dp"
+        android:layout_toRightOf="@+id/btnSendSms"
         android:text="ReadEmail"
         android:textColor="#FF00FF" />
 
@@ -44,41 +55,31 @@
         android:id="@+id/btnEmail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignRight="@+id/btnSendSms"
-        android:layout_marginBottom="17dp"
-        android:text="SendMail"
+        android:layout_alignBaseline="@+id/btnReadEmail"
+        android:layout_alignBottom="@+id/btnReadEmail"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="18dp"
+        android:text="Sendmail"
         android:textColor="#FF00FF" />
 
     <Button
-        android:id="@+id/btnReadSms"
+        android:id="@+id/btnDecrypt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/btnReadEmail"
-        android:layout_alignLeft="@+id/btnEncrptSms"
-        android:layout_marginBottom="45dp"
-        android:text="ReadSms"
+        android:layout_alignRight="@+id/btnReadEmail"
+        android:layout_centerVertical="true"
+        android:text="Decrypt"
         android:textColor="#FF00FF" />
 
     <Button
         android:id="@+id/btnEncrptSms"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="38dp"
+        android:layout_alignBaseline="@+id/btnDecrypt"
+        android:layout_alignBottom="@+id/btnDecrypt"
+        android:layout_alignRight="@+id/btnSendSms"
+        android:layout_marginRight="71dp"
         android:text="Encrypt"
-        android:textColor="#FF00FF" />
-
-    <Button
-        android:id="@+id/btnSendSms"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/btnReadSms"
-        android:layout_alignBottom="@+id/btnReadSms"
-        android:layout_marginLeft="35dp"
-        android:layout_toRightOf="@+id/btnReadEmail"
-        android:text="SendSms"
         android:textColor="#FF00FF" />
 
 </RelativeLayout>
