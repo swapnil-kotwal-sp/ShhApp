@@ -9,15 +9,18 @@ import java.util.concurrent.TimeoutException;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.provider.ContactsContract;
 import android.telephony.SmsManager;
 import android.util.Log;
 import android.widget.EditText;
+import android.widget.ListAdapter;
+import android.widget.SimpleCursorAdapter;
 
 public class MessageUtil {
   private ShhActivity shhActivity;
   private EditText messageTxt;
   private RSAAsynckTask rsaTask = null;
-  List<String> smsArray = new ArrayList<String>();
+  List<String> smsList = new ArrayList<String>();
 
   public MessageUtil(ShhActivity shhActivity) {
     this.shhActivity = shhActivity;
@@ -56,18 +59,23 @@ public class MessageUtil {
     }
   }
 
+  @SuppressWarnings("deprecation")
   public List<String> SMSRead() {
     Uri uriSMSURI = Uri.parse("content://sms/inbox");
     Cursor cur = shhActivity.getContentResolver().query(uriSMSURI, null, null,
         null, null);
-    String sms = "";
-    int i = 0;
-    while (cur.moveToNext()) {
-      sms += "From :" + cur.getString(2) + " : " + cur.getString(11) + "\n";
-      smsArray.add(cur.getString(11));
+    try {
+      for (boolean hasData = cur.moveToFirst(); hasData; hasData = cur
+      .moveToNext()) {
+        final String address = cur.getString(cur.getColumnIndex("address"));
+        final String body = cur.getString(cur.getColumnIndexOrThrow("body"));
+        smsList.add("Number: " + address + " .Message: " + body);
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
     }
-    messageTxt.setText(smsArray.get(0));
-    return smsArray;
+    messageTxt.setText(smsList.get(0));
+    return smsList;
   }
 
   public void readMail() {
