@@ -81,4 +81,5 @@
         android:text="SendSms"
         android:textColor="#FF00FF" />
 
+
 </RelativeLayout>

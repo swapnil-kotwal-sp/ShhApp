@@ -4,15 +4,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 
 import com.google.analytics.tracking.android.EasyTracker;
 
@@ -36,11 +44,12 @@ public class ShhActivity extends Activity {
     messageTxt.addTextChangedListener(new TextWatcher() {
       @Override
       public void afterTextChanged(Editable arg0) {
-         enableSubmitIfReady();
+        enableSubmitIfReady();
       }
 
       @Override
-      public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+      public void beforeTextChanged(CharSequence s, int start, int count,
+          int after) {
       }
 
       @Override
@@ -54,7 +63,8 @@ public class ShhActivity extends Activity {
           messageUtil.encryptSMS();
         } catch (Exception e) {
           e.printStackTrace();
-      }}
+        }
+      }
     });
     decryptBtn.setOnClickListener(new OnClickListener() {
       @Override
@@ -78,26 +88,41 @@ public class ShhActivity extends Activity {
       @Override
       public void onClick(View arg0) {
         smsArray = messageUtil.SMSRead();
-        Log.i("smsArray",smsArray.toString());
+        Intent i = new Intent(ShhActivity.this, SelectSms.class);
+        startActivity(i);
+       
       }
     });
     readMails.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View arg0) {
-        messageUtil.readMail();
+       // messageUtil.readMail();
       }
     });
   }
 
+  @SuppressWarnings("deprecation")
+  private Cursor getContacts() {
+    // Run query
+    Uri uri = ContactsContract.Contacts.CONTENT_URI;
+    String[] projection = new String[] { ContactsContract.Contacts._ID,
+        ContactsContract.Contacts.DISPLAY_NAME };
+    String selection = ContactsContract.Contacts.IN_VISIBLE_GROUP + " = '"
+    + ("1") + "'";
+    String[] selectionArgs = null;
+    String sortOrder = ContactsContract.Contacts.DISPLAY_NAME
+    + " COLLATE LOCALIZED ASC";
 
-  protected void enableSubmitIfReady() {
-    if(messageTxt.getText().toString().trim().length() > 0){
-      encryptBtn.setEnabled(true);
-   } else {
-     encryptBtn.setEnabled(false);
-    }    
+    return managedQuery(uri, projection, selection, selectionArgs, sortOrder);
   }
 
+  protected void enableSubmitIfReady() {
+    if (messageTxt.getText().toString().trim().length() > 0) {
+      encryptBtn.setEnabled(true);
+    } else {
+      encryptBtn.setEnabled(false);
+    }
+  }
 
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
@@ -105,7 +130,6 @@ public class ShhActivity extends Activity {
     getMenuInflater().inflate(R.menu.activity_main, menu);
     return true;
   }
-
 
   @Override
   public void onStart() {
