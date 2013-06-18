@@ -12,9 +12,8 @@
 
         <EditText
             android:id="@+id/viewSmsText"
-            android:layout_width="0dp"
-            android:layout_height="200dp"
-            android:layout_weight=".40"
+            android:layout_width="match_parent"
+            android:layout_height="121dp"
             android:hint="Enter your sms body"
             android:imeActionLabel="launch" />
     </LinearLayout>
@@ -81,5 +80,13 @@
         android:text="SendSms"
         android:textColor="#FF00FF" />
 
-
+    <Spinner
+        android:id="@+id/spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/btnDecrypt"
+        android:layout_alignParentLeft="true"
+        android:layout_marginBottom="26dp"
+        android:prompt="@string/sms_prompt" />
+<!--         android:entries="@array/planets_array" -->
 </RelativeLayout>

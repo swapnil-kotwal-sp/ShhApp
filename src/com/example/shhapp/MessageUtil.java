@@ -18,13 +18,11 @@ import android.widget.SimpleCursorAdapter;
 
 public class MessageUtil {
   private ShhActivity shhActivity;
-  private EditText messageTxt;
   private RSAAsynckTask rsaTask = null;
   List<String> smsList = new ArrayList<String>();
 
   public MessageUtil(ShhActivity shhActivity) {
     this.shhActivity = shhActivity;
-    messageTxt = shhActivity.messageTxt;
   }
 
   public void sendLongSMS() {
@@ -37,11 +35,12 @@ public class MessageUtil {
     smsManager.sendMultipartTextMessage(phoneNumber, null, parts, null, null);
   }
 
-  public void invokeSMSApp() {
+  public void invokeSMSApp(String smsBody) {
     Intent smsIntent = new Intent(Intent.ACTION_VIEW);
-    smsIntent.putExtra("sms_body", messageTxt.getText().toString());
-    smsIntent.putExtra("address", "");
-    smsIntent.setType("vnd.android-dir/mms-sms");
+    smsIntent.putExtra("address", "465654");
+    smsIntent.putExtra("sms_body", smsBody);
+    smsIntent.setData(Uri.parse("smsto:" + "465654"));
+//    smsIntent.setType("vnd.android-dir/mms-sms");
     shhActivity.startActivity(smsIntent);
   }
 
@@ -59,7 +58,6 @@ public class MessageUtil {
     }
   }
 
-  @SuppressWarnings("deprecation")
   public List<String> SMSRead() {
     Uri uriSMSURI = Uri.parse("content://sms/inbox");
     Cursor cur = shhActivity.getContentResolver().query(uriSMSURI, null, null,
@@ -74,7 +72,6 @@ public class MessageUtil {
     } catch (Exception e) {
       e.printStackTrace();
     }
-    messageTxt.setText(smsList.get(0));
     return smsList;
   }
 

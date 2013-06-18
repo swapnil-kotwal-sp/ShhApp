@@ -17,17 +17,20 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Spinner;
 
 import com.google.analytics.tracking.android.EasyTracker;
 
-public class ShhActivity extends Activity {
+public class ShhActivity extends Activity implements OnItemSelectedListener{
   EditText messageTxt;
   Button encryptBtn;
   List<String> smsArray = new ArrayList<String>();
+  Spinner spinnerCategory;
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -75,7 +78,7 @@ public class ShhActivity extends Activity {
     sendSMSButton.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View arg0) {
-        messageUtil.invokeSMSApp();
+        messageUtil.invokeSMSApp(messageTxt.getText().toString());
       }
     });
     email.setOnClickListener(new OnClickListener() {
@@ -88,15 +91,19 @@ public class ShhActivity extends Activity {
       @Override
       public void onClick(View arg0) {
         smsArray = messageUtil.SMSRead();
-        Intent i = new Intent(ShhActivity.this, SelectSms.class);
-        startActivity(i);
+        spinnerCategory = (Spinner)findViewById(R.id.spinner);
+        ArrayAdapter<String> categoriesAdapter = new ArrayAdapter<String>(ShhActivity.this, android.R.layout.simple_spinner_item, smsArray);
+        spinnerCategory.setAdapter(categoriesAdapter);
+        spinnerCategory.setOnItemSelectedListener(ShhActivity.this);
+//        Intent i = new Intent(ShhActivity.this, SelectSms.class);
+//        startActivity(i);
        
       }
     });
     readMails.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View arg0) {
-       // messageUtil.readMail();
+        messageUtil.readMail();
       }
     });
   }
@@ -143,5 +150,17 @@ public class ShhActivity extends Activity {
     super.onStop();
     // The rest of your onStop() code.
     EasyTracker.getInstance().activityStop(this); // Add this method.
+  }
+
+  @Override
+  public void onItemSelected(AdapterView<?> parent, View arg1, int pos, long id) {
+    String textSms =  parent.getItemAtPosition(pos).toString();
+    messageTxt.setText(textSms); 
+  }
+
+  @Override
+  public void onNothingSelected(AdapterView<?> arg0) {
+    // TODO Auto-generated method stub
+    
   }
 }
