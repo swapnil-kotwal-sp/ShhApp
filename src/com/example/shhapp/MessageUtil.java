@@ -37,9 +37,9 @@ public class MessageUtil {
 
   public void invokeSMSApp(String smsBody) {
     Intent smsIntent = new Intent(Intent.ACTION_VIEW);
-    smsIntent.putExtra("address", "465654");
+    smsIntent.putExtra("address", "");
     smsIntent.putExtra("sms_body", smsBody);
-    smsIntent.setData(Uri.parse("smsto:" + "465654"));
+    smsIntent.setData(Uri.parse("smsto:" + ""));
 //    smsIntent.setType("vnd.android-dir/mms-sms");
     shhActivity.startActivity(smsIntent);
   }
