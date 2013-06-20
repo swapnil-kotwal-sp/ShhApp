@@ -50,26 +50,6 @@
         android:textColor="#FF00FF" />
 
     <Button
-        android:id="@+id/btnReadSms"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/btnReadEmail"
-        android:layout_alignLeft="@+id/btnEncrptSms"
-        android:layout_marginBottom="45dp"
-        android:text="ReadSms"
-        android:textColor="#FF00FF" />
-
-    <Button
-        android:id="@+id/btnEncrptSms"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="38dp"
-        android:text="Encrypt"
-        android:textColor="#FF00FF" />
-
-    <Button
         android:id="@+id/btnSendSms"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -80,13 +60,44 @@
         android:text="SendSms"
         android:textColor="#FF00FF" />
 
+<!--         android:entries="@array/planets_array" -->
+
     <Spinner
         android:id="@+id/spinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/btnDecrypt"
         android:layout_alignParentLeft="true"
-        android:layout_marginBottom="26dp"
+        android:layout_below="@+id/linearLayout1"
+        android:layout_toLeftOf="@+id/btnSendSms"
         android:prompt="@string/sms_prompt" />
-<!--         android:entries="@array/planets_array" -->
+
+    <Spinner
+        android:id="@+id/Spinner01"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/spinner"
+        android:layout_toRightOf="@+id/spinner"
+        android:prompt="@string/sms_prompt" />
+
+    <Button
+        android:id="@+id/btnReadSms"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/btnReadEmail"
+        android:layout_alignLeft="@+id/btnEncrptSms"
+        android:layout_marginBottom="25dp"
+        android:text="ReadSms"
+        android:textColor="#FF00FF" />
+
+    <Button
+        android:id="@+id/btnEncrptSms"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/btnReadSms"
+        android:layout_alignParentLeft="true"
+        android:layout_marginBottom="32dp"
+        android:layout_marginLeft="31dp"
+        android:text="Encrypt"
+        android:textColor="#FF00FF" />
+
 </RelativeLayout>
