@@ -30,7 +30,9 @@ public class ShhActivity extends Activity implements OnItemSelectedListener {
   List<String> messageBody;
   Spinner spinnerCategory;
   Spinner spinnerReadMail;
-
+/**
+ * On Activity Creation initialize all UI elements.
+ */
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
