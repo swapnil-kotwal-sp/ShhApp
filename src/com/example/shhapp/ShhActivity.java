@@ -2,35 +2,35 @@ package com.example.shhapp;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.Spinner;
 
 import com.google.analytics.tracking.android.EasyTracker;
 
-public class ShhActivity extends Activity implements OnItemSelectedListener{
+public class ShhActivity extends Activity implements OnItemSelectedListener {
   EditText messageTxt;
   Button encryptBtn;
   List<String> smsArray = new ArrayList<String>();
+  List<String> messageBody;
   Spinner spinnerCategory;
+  Spinner spinnerReadMail;
+
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -44,6 +44,7 @@ public class ShhActivity extends Activity implements OnItemSelectedListener{
     Button readSms = (Button) findViewById(R.id.btnReadSms);
     Button readMails = (Button) findViewById(R.id.btnReadEmail);
     final MessageUtil messageUtil = new MessageUtil(this);
+
     messageTxt.addTextChangedListener(new TextWatcher() {
       @Override
       public void afterTextChanged(Editable arg0) {
@@ -91,19 +92,34 @@ public class ShhActivity extends Activity implements OnItemSelectedListener{
       @Override
       public void onClick(View arg0) {
         smsArray = messageUtil.SMSRead();
-        spinnerCategory = (Spinner)findViewById(R.id.spinner);
-        ArrayAdapter<String> categoriesAdapter = new ArrayAdapter<String>(ShhActivity.this, android.R.layout.simple_spinner_item, smsArray);
+        spinnerCategory = (Spinner) findViewById(R.id.spinner);
+        ArrayAdapter<String> categoriesAdapter = new ArrayAdapter<String>(
+            ShhActivity.this, android.R.layout.simple_spinner_item, smsArray);
         spinnerCategory.setAdapter(categoriesAdapter);
         spinnerCategory.setOnItemSelectedListener(ShhActivity.this);
-//        Intent i = new Intent(ShhActivity.this, SelectSms.class);
-//        startActivity(i);
-       
       }
     });
     readMails.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View arg0) {
-        messageUtil.readMail();
+        ReadGmails newGmailClient = new ReadGmails();
+        newGmailClient.setAccountDetails("nehakumar001988@gmail.com",
+            "goodsamaritan");
+        newGmailClient.execute("a");
+        try {
+          newGmailClient.get();
+        } catch (InterruptedException e1) {
+          e1.printStackTrace();
+        } catch (ExecutionException e1) {
+          e1.printStackTrace();
+        }
+        List<String> from = newGmailClient.from;
+       messageBody = newGmailClient.messageBody;
+        spinnerReadMail = (Spinner) findViewById(R.id.Spinner01);
+        ArrayAdapter<String> mailAdapter = new ArrayAdapter<String>(
+            ShhActivity.this, android.R.layout.simple_spinner_item, from);
+        spinnerReadMail.setAdapter(mailAdapter);
+        spinnerReadMail.setOnItemSelectedListener(ShhActivity.this);
       }
     });
   }
@@ -115,10 +131,10 @@ public class ShhActivity extends Activity implements OnItemSelectedListener{
     String[] projection = new String[] { ContactsContract.Contacts._ID,
         ContactsContract.Contacts.DISPLAY_NAME };
     String selection = ContactsContract.Contacts.IN_VISIBLE_GROUP + " = '"
-    + ("1") + "'";
+        + ("1") + "'";
     String[] selectionArgs = null;
     String sortOrder = ContactsContract.Contacts.DISPLAY_NAME
-    + " COLLATE LOCALIZED ASC";
+        + " COLLATE LOCALIZED ASC";
 
     return managedQuery(uri, projection, selection, selectionArgs, sortOrder);
   }
@@ -154,13 +170,13 @@ public class ShhActivity extends Activity implements OnItemSelectedListener{
 
   @Override
   public void onItemSelected(AdapterView<?> parent, View arg1, int pos, long id) {
-    String textSms =  parent.getItemAtPosition(pos).toString();
-    messageTxt.setText(textSms); 
+    String textSms = parent.getItemAtPosition(pos).toString();
+    messageTxt.setText(textSms);
   }
 
   @Override
   public void onNothingSelected(AdapterView<?> arg0) {
     // TODO Auto-generated method stub
-    
+
   }
 }
