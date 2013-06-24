@@ -62,8 +62,7 @@ public class RSA {
     publicKey = new BigInteger("65537"); // common value in practice = 2^16 + 1
     /** Note: RSA privateKey is (privateKey,modulus) **/
     privateKey = publicKey.modInverse(phi);
-    System.out.println("P: " + p + "  Q: " + q + "  phi: " + phi + " N: "
-        + modulus);
+    System.out.println("P: " + p + "  Q: " + q );
   }
 
   BigInteger encrypt(BigInteger message) {
