@@ -3,6 +3,9 @@ package com.example.shhapp;
 /*
  * AsyncTask for instantiating GMailSender object
  */
+import java.util.ArrayList;
+import java.util.List;
+
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
@@ -10,13 +13,13 @@ import android.widget.Toast;
 
 import com.internal.utility.GMailUtil;
 
-public class GMailSenderAsynTask extends AsyncTask<String, Boolean, Boolean> {
+public class GmailReciever extends AsyncTask<String, Boolean, Boolean> {
   private String sender;
-  private String reciever;
   private String senderPassWord;
   private ProgressDialog progress;
   private Activity shhActivity;
-  
+  List<String> from = new ArrayList<String>();
+  List<String> messageBody = new ArrayList<String>();
   protected void onPreExecute() {
     // Show progress Dialog here
     super.onPreExecute();
@@ -31,24 +34,24 @@ public class GMailSenderAsynTask extends AsyncTask<String, Boolean, Boolean> {
     progress.show();
 
   }
-  public GMailSenderAsynTask(final String sender, final String senderPassWord,
-      final String reciver, Activity activity) {
+
+  public GmailReciever(final String sender, final String senderPassWord, Activity activity) {
     super();
     this.sender = sender;
     this.senderPassWord = senderPassWord;
-    this.reciever = reciver;
     this.shhActivity = activity;
   }
 
   protected final Boolean doInBackground(final String... logArray) {
     GMailUtil gMailUtil = new GMailUtil(sender, senderPassWord);
     try {
-      gMailUtil.sendMail("Shh.. you message!", logArray[0].toString(), reciever,
-          reciever);
+      gMailUtil.readMails();
       publishProgress(true);
       return true;
     } catch (Exception e) {
       e.printStackTrace();
+      from = GMailUtil.from;
+      messageBody = GMailUtil.messageBody;
       return false;
     }
   }
@@ -58,9 +61,10 @@ public class GMailSenderAsynTask extends AsyncTask<String, Boolean, Boolean> {
     if (progress.isShowing()) {
       progress.dismiss();
     }
-    if(success){
-      Toast.makeText(shhActivity, "Email has been sent", Toast.LENGTH_LONG).show();
-    }else
-      Toast.makeText(shhActivity, "Email not sent", Toast.LENGTH_LONG).show();
+    if (success) {
+      Toast.makeText(shhActivity, "All Email has been read", Toast.LENGTH_LONG)
+          .show();
+    } else
+      Toast.makeText(shhActivity, "Email not able to read", Toast.LENGTH_LONG).show();
   }
 }

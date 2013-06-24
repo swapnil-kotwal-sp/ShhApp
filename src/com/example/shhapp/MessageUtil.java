@@ -9,30 +9,18 @@ import java.util.concurrent.TimeoutException;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
-import android.provider.ContactsContract;
 import android.telephony.SmsManager;
 import android.util.Log;
-import android.widget.EditText;
-import android.widget.ListAdapter;
-import android.widget.SimpleCursorAdapter;
 
 public class MessageUtil {
   private ShhActivity shhActivity;
   private RSAAsynckTask rsaTask = null;
   List<String> smsList = new ArrayList<String>();
+  List<String> from = new ArrayList<String>();
+  List<String> messageBody = new ArrayList<String>();
 
   public MessageUtil(ShhActivity shhActivity) {
     this.shhActivity = shhActivity;
-  }
-
-  public void sendLongSMS() {
-    String phoneNumber = "";
-    String message = "Hello World! Now we are going to demonstrate "
-      + "how to send a message with more than 160 characters from your Android application.";
-
-    SmsManager smsManager = SmsManager.getDefault();
-    ArrayList<String> parts = smsManager.divideMessage(message);
-    smsManager.sendMultipartTextMessage(phoneNumber, null, parts, null, null);
   }
 
   public void invokeSMSApp(String smsBody) {
@@ -40,14 +28,29 @@ public class MessageUtil {
     smsIntent.putExtra("address", "");
     smsIntent.putExtra("sms_body", smsBody);
     smsIntent.setData(Uri.parse("smsto:" + ""));
-//    smsIntent.setType("vnd.android-dir/mms-sms");
+    // smsIntent.setType("vnd.android-dir/mms-sms");
     shhActivity.startActivity(smsIntent);
+  }
+
+  public void readEmail(String message) {
+    GmailReciever gMailSenderAsynTask = new GmailReciever(
+        "user@gmail.com", "password", shhActivity);
+    gMailSenderAsynTask.execute(message);
+    try {
+      if (!gMailSenderAsynTask.get(8000, TimeUnit.MILLISECONDS)) {
+        Log.e("email", "password may not be correct");
+      }
+    } catch (Exception e) {
+      if (e != null) {
+        e.printStackTrace();
+      }
+    }
   }
 
   public void sendEmail(String message) {
     GMailSenderAsynTask gMailSenderAsynTask = new GMailSenderAsynTask(
-        "ooyalatester@vertisinfotech.com", "!password*",
-        "swapnil@vertisinfotech.com", shhActivity);
+        "user@gmail.com", "password",
+        "user@gmail.com", shhActivity);
     gMailSenderAsynTask.execute(message);
     try {
       if (!gMailSenderAsynTask.get(8000, TimeUnit.MILLISECONDS)) {
@@ -56,6 +59,7 @@ public class MessageUtil {
     } catch (Exception e) {
       e.printStackTrace();
     }
+    gMailSenderAsynTask.cancel(true);
   }
 
   public List<String> SMSRead() {
@@ -64,7 +68,7 @@ public class MessageUtil {
         null, null);
     try {
       for (boolean hasData = cur.moveToFirst(); hasData; hasData = cur
-      .moveToNext()) {
+          .moveToNext()) {
         final String address = cur.getString(cur.getColumnIndex("address"));
         final String body = cur.getString(cur.getColumnIndexOrThrow("body"));
         smsList.add("Number: " + address + " .Message: " + body);
@@ -77,12 +81,12 @@ public class MessageUtil {
 
   public void readMail() {
     Intent intent = shhActivity.getPackageManager().getLaunchIntentForPackage(
-    "com.android.email");
+        "com.android.email");
     shhActivity.startActivity(intent);
   }
 
   public void encryptSMS() throws InterruptedException, ExecutionException,
-  TimeoutException {
+      TimeoutException {
     rsaTask = new RSAAsynckTask(shhActivity);
     rsaTask.execute(5000);
     rsaTask.get(8000, TimeUnit.MILLISECONDS);

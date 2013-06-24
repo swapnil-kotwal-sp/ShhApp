@@ -2,7 +2,6 @@ package com.example.shhapp;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import android.app.Activity;
 import android.database.Cursor;
@@ -22,17 +21,19 @@ import android.widget.EditText;
 import android.widget.Spinner;
 
 import com.google.analytics.tracking.android.EasyTracker;
+import com.internal.utility.GMailUtil;
 
 public class ShhActivity extends Activity implements OnItemSelectedListener {
   EditText messageTxt;
   Button encryptBtn;
   List<String> smsArray = new ArrayList<String>();
-  List<String> messageBody;
+  List<String> messageBody = new ArrayList<String>();
   Spinner spinnerCategory;
   Spinner spinnerReadMail;
-/**
- * On Activity Creation initialize all UI elements.
- */
+
+  /**
+   * On Activity Creation initialize all UI elements.
+   */
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -104,19 +105,9 @@ public class ShhActivity extends Activity implements OnItemSelectedListener {
     readMails.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View arg0) {
-        ReadGmails newGmailClient = new ReadGmails();
-        newGmailClient.setAccountDetails("nehakumar001988@gmail.com",
-            "goodsamaritan");
-        newGmailClient.execute("a");
-        try {
-          newGmailClient.get();
-        } catch (InterruptedException e1) {
-          e1.printStackTrace();
-        } catch (ExecutionException e1) {
-          e1.printStackTrace();
-        }
-        List<String> from = newGmailClient.from;
-       messageBody = newGmailClient.messageBody;
+        messageUtil.readEmail("a");
+        List<String> from = GMailUtil.from;
+        messageBody = GMailUtil.messageBody;
         spinnerReadMail = (Spinner) findViewById(R.id.Spinner01);
         ArrayAdapter<String> mailAdapter = new ArrayAdapter<String>(
             ShhActivity.this, android.R.layout.simple_spinner_item, from);
@@ -133,10 +124,10 @@ public class ShhActivity extends Activity implements OnItemSelectedListener {
     String[] projection = new String[] { ContactsContract.Contacts._ID,
         ContactsContract.Contacts.DISPLAY_NAME };
     String selection = ContactsContract.Contacts.IN_VISIBLE_GROUP + " = '"
-        + ("1") + "'";
+    + ("1") + "'";
     String[] selectionArgs = null;
     String sortOrder = ContactsContract.Contacts.DISPLAY_NAME
-        + " COLLATE LOCALIZED ASC";
+    + " COLLATE LOCALIZED ASC";
 
     return managedQuery(uri, projection, selection, selectionArgs, sortOrder);
   }
@@ -173,12 +164,22 @@ public class ShhActivity extends Activity implements OnItemSelectedListener {
   @Override
   public void onItemSelected(AdapterView<?> parent, View arg1, int pos, long id) {
     String textSms = parent.getItemAtPosition(pos).toString();
-    messageTxt.setText(textSms);
+
+    switch (parent.getId()) {
+    case R.id.Spinner01:
+      messageTxt.setText(messageBody.get(pos));
+      break;
+    case R.id.spinner:
+      messageTxt.setText(textSms);
+      break;
+    default:
+      messageTxt.setText("");
+      break;
+    }
   }
 
   @Override
   public void onNothingSelected(AdapterView<?> arg0) {
-    // TODO Auto-generated method stub
 
   }
 }
