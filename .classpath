@@ -12,5 +12,7 @@
 			<accessrule kind="nonaccessible" pattern="com/android/internal/**"/>
 		</accessrules>
 	</classpathentry>
+	<classpathentry kind="lib" path="libs/ormlite-android-4.43.jar"/>
+	<classpathentry kind="lib" path="libs/ormlite-core-4.43.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
