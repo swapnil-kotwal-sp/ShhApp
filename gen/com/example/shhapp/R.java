@@ -11,7 +11,7 @@ public final class R {
     public static final class attr {
     }
     public static final class color {
-        public static final int back=0x7f050000;
+        public static final int back=0x7f060000;
     }
     public static final class drawable {
         public static final int green_grass=0x7f020000;
@@ -19,32 +19,41 @@ public final class R {
         public static final int shh=0x7f020002;
     }
     public static final class id {
-        public static final int Spinner01=0x7f080009;
-        public static final int btnDecrypt=0x7f080002;
-        public static final int btnEmail=0x7f080004;
-        public static final int btnEncrptSms=0x7f080003;
-        public static final int btnReadEmail=0x7f080006;
-        public static final int btnReadSms=0x7f080007;
-        public static final int btnSendSms=0x7f080005;
-        public static final int linearLayout1=0x7f080000;
-        public static final int menu_settings=0x7f08000a;
-        public static final int spinner=0x7f080008;
-        public static final int viewSmsText=0x7f080001;
+        public static final int Button01=0x7f09000b;
+        public static final int Spinner01=0x7f090009;
+        public static final int btnDecrypt=0x7f090002;
+        public static final int btnEmail=0x7f090004;
+        public static final int btnEncrptSms=0x7f090003;
+        public static final int btnReadEmail=0x7f090006;
+        public static final int btnReadSms=0x7f090007;
+        public static final int btnSendSms=0x7f090005;
+        public static final int linearLayout1=0x7f090000;
+        public static final int menu_settings=0x7f09000c;
+        public static final int spinner=0x7f090008;
+        public static final int username=0x7f09000a;
+        public static final int viewSmsText=0x7f090001;
     }
     public static final class layout {
         public static final int activity_main=0x7f030000;
-        public static final int list_example_entry=0x7f030001;
+        public static final int dialog_signin=0x7f030001;
+        public static final int list_example_entry=0x7f030002;
     }
     public static final class menu {
-        public static final int activity_action_mode_demo=0x7f070000;
-        public static final int activity_main=0x7f070001;
-        public static final int activity_select_sms=0x7f070002;
+        public static final int activity_action_mode_demo=0x7f080000;
+        public static final int activity_main=0x7f080001;
+        public static final int activity_select_sms=0x7f080002;
+    }
+    public static final class raw {
+        public static final int ormlite_config=0x7f040000;
     }
     public static final class string {
-        public static final int app_name=0x7f040000;
-        public static final int hello_world=0x7f040001;
-        public static final int menu_settings=0x7f040002;
-        public static final int sms_prompt=0x7f040003;
+        public static final int app_name=0x7f050000;
+        public static final int hello_world=0x7f050001;
+        public static final int menu_settings=0x7f050002;
+        public static final int ok=0x7f050006;
+        public static final int sms_prompt=0x7f050003;
+        public static final int testername=0x7f050004;
+        public static final int username=0x7f050005;
     }
     public static final class style {
         /** 
@@ -68,10 +77,10 @@ public final class R {
     
  API 14 theme customizations can go here. 
          */
-        public static final int AppBaseTheme=0x7f060000;
+        public static final int AppBaseTheme=0x7f070000;
         /**  Application theme. 
  All customizations that are NOT specific to a particular API-level can go here. 
          */
-        public static final int AppTheme=0x7f060001;
+        public static final int AppTheme=0x7f070001;
     }
 }

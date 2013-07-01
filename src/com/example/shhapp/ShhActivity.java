@@ -2,14 +2,12 @@ package com.example.shhapp;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
-import android.app.Activity;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -22,8 +20,12 @@ import android.widget.Spinner;
 
 import com.google.analytics.tracking.android.EasyTracker;
 import com.internal.utility.GMailUtil;
+import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
+import com.j256.ormlite.dao.RuntimeExceptionDao;
 
-public class ShhActivity extends Activity implements OnItemSelectedListener {
+public class ShhActivity extends
+OrmLiteBaseActivity<com.internal.utility.DatabaseHelper> implements
+OnItemSelectedListener {
   EditText messageTxt;
   Button encryptBtn;
   List<String> smsArray = new ArrayList<String>();
@@ -38,6 +40,7 @@ public class ShhActivity extends Activity implements OnItemSelectedListener {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
+    doSampleDatabaseStuff("onCreate");
     messageTxt = (EditText) findViewById(R.id.viewSmsText);
     Button sendSMSButton = (Button) findViewById(R.id.btnSendSms);
     encryptBtn = (Button) findViewById(R.id.btnEncrptSms);
@@ -88,7 +91,8 @@ public class ShhActivity extends Activity implements OnItemSelectedListener {
     email.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View arg0) {
-        messageUtil.sendEmail(messageTxt.getText().toString());
+        messageUtil.getRecieverMailIdAndSendMail(messageTxt.getText()
+            .toString(), ShhActivity.this);
       }
     });
     readSms.setOnClickListener(new OnClickListener() {
@@ -115,21 +119,6 @@ public class ShhActivity extends Activity implements OnItemSelectedListener {
         spinnerReadMail.setOnItemSelectedListener(ShhActivity.this);
       }
     });
-  }
-
-  @SuppressWarnings("deprecation")
-  private Cursor getContacts() {
-    // Run query
-    Uri uri = ContactsContract.Contacts.CONTENT_URI;
-    String[] projection = new String[] { ContactsContract.Contacts._ID,
-        ContactsContract.Contacts.DISPLAY_NAME };
-    String selection = ContactsContract.Contacts.IN_VISIBLE_GROUP + " = '"
-    + ("1") + "'";
-    String[] selectionArgs = null;
-    String sortOrder = ContactsContract.Contacts.DISPLAY_NAME
-    + " COLLATE LOCALIZED ASC";
-
-    return managedQuery(uri, projection, selection, selectionArgs, sortOrder);
   }
 
   protected void enableSubmitIfReady() {
@@ -181,5 +170,57 @@ public class ShhActivity extends Activity implements OnItemSelectedListener {
   @Override
   public void onNothingSelected(AdapterView<?> arg0) {
 
+  }
+
+  /**
+   * Do our sample database stuff.
+   */
+  private void doSampleDatabaseStuff(String action) {
+    // get our dao
+    RuntimeExceptionDao<User, Integer> simpleDao = getHelper()
+    .getSimpleDataDao();
+    // query for all of the data objects in the database
+    List<User> list = simpleDao.queryForAll();
+    // our string builder for building the content-view
+    StringBuilder sb = new StringBuilder();
+    sb.append("got ").append(list.size()).append(" entries in ").append(action)
+    .append("\n");
+
+    // if we already have items in the database
+    int simpleC = 0;
+    for (User simple : list) {
+      sb.append("------------------------------------------\n");
+      sb.append("[").append(simpleC).append("] = ").append(simple).append("\n");
+      simpleC++;
+    }
+    sb.append("------------------------------------------\n");
+    for (User simple : list) {
+      simpleDao.delete(simple);
+      sb.append("deleted id ").append(simple.getId()).append("\n");
+      Log.i("User", "deleting simple(" + simple.getId() + ")");
+      simpleC++;
+    }
+    int createNum;
+    do {
+      createNum = new Random().nextInt(3) + 1;
+    } while (createNum == list.size());
+    for (int i = 0; i < createNum; i++) {
+      // create a new simple object
+      long millis = System.currentTimeMillis();
+      User simple = new User();
+      // store it in the database
+      simpleDao.create(simple);
+      Log.i("User", "created simple(" + millis + ")");
+      // output it
+      sb.append("------------------------------------------\n");
+      sb.append("created new entry #").append(i + 1).append(":\n");
+      sb.append(simple).append("\n");
+      try {
+        Thread.sleep(5);
+      } catch (InterruptedException e) {
+        // ignore
+      }
+    }
+    Log.i("User", "Done with page at " + System.currentTimeMillis());
   }
 }
