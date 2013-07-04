@@ -1,7 +1,6 @@
 package com.example.shhapp;
 
 import java.io.UnsupportedEncodingException;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,20 +47,11 @@ OnItemSelectedListener {
     encryptBtn = (Button) findViewById(R.id.btnEncrptSms);
     encryptBtn.setEnabled(false);
     Button decryptBtn = (Button) findViewById(R.id.btnDecrypt);
-    Button email = (Button) findViewById(R.id.btnEmail);
+    Button sendEmail = (Button) findViewById(R.id.btnEmail);
     Button readSms = (Button) findViewById(R.id.btnReadSms);
     Button readMails = (Button) findViewById(R.id.btnReadEmail);
 
     dao = getHelper().getRuntimeExceptionDao(Contact.class);
-    queryForAll();
-    try {
-      addContact("swap@gmail.com", "swap");
-    } catch (NoSuchAlgorithmException e1) {
-      e1.printStackTrace();
-    } catch (UnsupportedEncodingException e1) {
-      e1.printStackTrace();
-    }
-
     final MessageUtil messageUtil = new MessageUtil(this);
 
     messageTxt.addTextChangedListener(new TextWatcher() {
@@ -101,11 +91,15 @@ OnItemSelectedListener {
         messageUtil.invokeSMSApp(messageTxt.getText().toString());
       }
     });
-    email.setOnClickListener(new OnClickListener() {
+    sendEmail.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View arg0) {
-        messageUtil.getRecieverMailIdAndSendMail(messageTxt.getText()
-            .toString(), ShhActivity.this);
+        List<String> creadentials = ShhActivity.this.isRegisteredUser();
+        if(creadentials.size() > 0){
+          messageUtil.getRecieverMailIdAndSendMail(creadentials.get(0),creadentials.get(1), messageTxt.getText()
+              .toString(), ShhActivity.this);
+        }else 
+          messageUtil.registerUserMailId();
       }
     });
     readSms.setOnClickListener(new OnClickListener() {
@@ -143,27 +137,6 @@ OnItemSelectedListener {
   }
 
   @Override
-  public boolean onCreateOptionsMenu(Menu menu) {
-    // Inflate the menu; this adds items to the action bar if it is present.
-    getMenuInflater().inflate(R.menu.activity_main, menu);
-    return true;
-  }
-
-  @Override
-  public void onStart() {
-    super.onStart();
-    // Initialise google analytics for this app.
-    EasyTracker.getInstance().activityStart(this); // Add this method.
-  }
-
-  @Override
-  public void onStop() {
-    super.onStop();
-    // The rest of your onStop() code.
-    EasyTracker.getInstance().activityStop(this); // Add this method.
-  }
-
-  @Override
   public void onItemSelected(AdapterView<?> parent, View arg1, int pos, long id) {
     String textSms = parent.getItemAtPosition(pos).toString();
 
@@ -188,17 +161,21 @@ OnItemSelectedListener {
   /**
    * Query for all the regs
    */
-  private void queryForAll() {
+  private List<String> queryForAll() {
     // query for all of the data objects in the database
     List<Contact> list = dao.queryForAll();
     // our string builder for building the content-view
     StringBuilder sb = new StringBuilder();
 
     sb.append("Found " + list.size() + " resultsn");
+    List<String> creadentials = new ArrayList<String>();
     for (Contact contact : list) {
+      creadentials.add(contact.email);
+      creadentials.add(contact.password);
       sb.append(contact.toString() + "n");
     }
     Log.i("sb.toString()", sb.toString());
+    return creadentials;
   }
 
   private void addContact(String Email, String password)
@@ -207,5 +184,34 @@ OnItemSelectedListener {
     sb.append("Added contact " + Email + " password " + password);
     dao.create(new Contact(Email, password));
     Log.i("results", sb.toString());
+  }
+
+  public List<String> isRegisteredUser() {
+    return queryForAll();
+  }
+
+  public void saveUserInfo(String userName, String password) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+    addContact(userName,password);
+  }
+  
+  @Override
+  public boolean onCreateOptionsMenu(Menu menu) {
+    // Inflate the menu; this adds items to the action bar if it is present.
+    getMenuInflater().inflate(R.menu.activity_main, menu);
+    return true;
+  }
+
+  @Override
+  public void onStart() {
+    super.onStart();
+    // Initialise google analytics for this app.
+    EasyTracker.getInstance().activityStart(this); // Add this method.
+  }
+
+  @Override
+  public void onStop() {
+    super.onStop();
+    // The rest of your onStop() code.
+    EasyTracker.getInstance().activityStop(this); // Add this method.
   }
 }
