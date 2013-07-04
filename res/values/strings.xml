@@ -7,6 +7,7 @@
     <string name="sms_prompt">Choose SMS</string>
     <string name="username">User Name</string>
     <string name="ok">OK</string>
+    <string name="password">password</string>
 
     <color name="back">#000000</color>
 

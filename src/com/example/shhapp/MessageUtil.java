@@ -1,5 +1,7 @@
 package com.example.shhapp;
 
+import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -26,12 +28,13 @@ public class MessageUtil {
   List<String> smsList = new ArrayList<String>();
   List<String> from = new ArrayList<String>();
   List<String> messageBody = new ArrayList<String>();
+  private Boolean RegistrationSuccess = false;
+
   public static String userEmailID;
 
   public MessageUtil(ShhActivity shhActivity) {
     this.shhActivity = shhActivity;
   }
-
   public void invokeSMSApp(String smsBody) {
     Intent smsIntent = new Intent(Intent.ACTION_VIEW);
     smsIntent.putExtra("address", "");
@@ -56,10 +59,18 @@ public class MessageUtil {
     }
   }
 
-  public void sendEmail(String reciverMailId, String message) {
-    GMailSenderAsynTask gMailSenderAsynTask = new GMailSenderAsynTask(
-        "user@gmail.com", "pwd",
-        reciverMailId, shhActivity);
+  /**
+   * Send mail to registered Gmail user id.
+   * 
+   * @param emailId
+   * @param password
+   * @param reciverMailId
+   * @param message
+   */
+  public void sendEmail(String emailId, String password, String reciverMailId,
+      String message) {
+    GMailSenderAsynTask gMailSenderAsynTask = new GMailSenderAsynTask(emailId,
+        password, reciverMailId, shhActivity);
     gMailSenderAsynTask.execute(message);
     try {
       if (!gMailSenderAsynTask.get(8000, TimeUnit.MILLISECONDS)) {
@@ -77,7 +88,7 @@ public class MessageUtil {
         null, null);
     try {
       for (boolean hasData = cur.moveToFirst(); hasData; hasData = cur
-      .moveToNext()) {
+          .moveToNext()) {
         final String address = cur.getString(cur.getColumnIndex("address"));
         final String body = cur.getString(cur.getColumnIndexOrThrow("body"));
         smsList.add("Number: " + address + " .Message: " + body);
@@ -90,12 +101,12 @@ public class MessageUtil {
 
   public void readMail() {
     Intent intent = shhActivity.getPackageManager().getLaunchIntentForPackage(
-    "com.android.email");
+        "com.android.email");
     shhActivity.startActivity(intent);
   }
 
   public void encryptSMS() throws InterruptedException, ExecutionException,
-  TimeoutException {
+      TimeoutException {
     rsaTask = new RSAAsynckTask(shhActivity);
     rsaTask.execute(5000);
     rsaTask.get(8000, TimeUnit.MILLISECONDS);
@@ -110,13 +121,17 @@ public class MessageUtil {
   /**
    * Dialog for getting user's name and email_id.
    * 
+   * @param emailId
+   * @param password
    * @param message
+   * @param activity
    */
-  public void getRecieverMailIdAndSendMail(final String message, Activity activity) {
+  public void getRecieverMailIdAndSendMail(final String emailId,
+      final String password, final String message, Activity activity) {
     final AlertDialog.Builder alert = new AlertDialog.Builder(activity);
     final AlertDialog dialog = alert.create();
     LayoutInflater inflater = activity.getLayoutInflater();
-    final View v = inflater.inflate(R.layout.dialog_signin, null);
+    final View v = inflater.inflate(R.layout.dialog_reciver, null);
     dialog.setView(v);
     dialog.setCancelable(false);
     dialog.show();
@@ -137,7 +152,7 @@ public class MessageUtil {
           }
           if (flag) {
             dialog.dismiss();
-            sendEmail(emailUserName, message);
+            sendEmail("abc", "abc", emailUserName, message);
           }
         }
       }
@@ -154,5 +169,48 @@ public class MessageUtil {
       result = false;
     }
     return result;
+  }
+
+  public void registerUserMailId() {
+    final AlertDialog.Builder alert = new AlertDialog.Builder(shhActivity);
+    final AlertDialog dialog = alert.create();
+    LayoutInflater inflater = shhActivity.getLayoutInflater();
+    final View v = inflater.inflate(R.layout.dialog_signin, null);
+    dialog.setView(v);
+    dialog.setCancelable(false);
+    dialog.show();
+    Button button = (Button) dialog.findViewById(R.id.Button01);
+    button.setOnClickListener(new View.OnClickListener() {
+      public void onClick(final View v1) {
+        EditText usernameEditext = (EditText) v.findViewById(R.id.username);
+        EditText passwordEdittextBox = (EditText) v.findViewById(R.id.password);
+        if (passwordEdittextBox != null && usernameEditext != null) {
+          String userName = usernameEditext.getText().toString();
+          if (userName.equals("")) {
+            usernameEditext.setError("username empty");
+          }
+          String password = passwordEdittextBox.getText().toString();
+          Boolean flag = true;
+          if (password.equals("")) {
+            flag = false;
+            passwordEdittextBox.setError("password is null");
+          }
+          if (flag && !validEmailAddress(userName)) {
+            flag = false;
+            usernameEditext.setError("invalid email_id");
+          }
+          if (flag && !userName.equals("")) {
+            dialog.dismiss();
+            try {
+              shhActivity.saveUserInfo(userName, password);
+            } catch (NoSuchAlgorithmException e) {
+              e.printStackTrace();
+            } catch (UnsupportedEncodingException e) {
+              e.printStackTrace();
+            }
+          }
+        }
+      }
+    });
   }
 }
