@@ -1,8 +1,10 @@
 package com.example.shhapp;
 
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import android.os.Bundle;
 import android.text.Editable;
@@ -23,8 +25,7 @@ import com.internal.utility.GMailUtil;
 import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
 
-public class ShhActivity extends
-OrmLiteBaseActivity<com.internal.utility.DatabaseHelper> implements
+public class ShhActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 OnItemSelectedListener {
   EditText messageTxt;
   Button encryptBtn;
@@ -33,6 +34,8 @@ OnItemSelectedListener {
   Spinner spinnerCategory;
   Spinner spinnerReadMail;
 
+  private RuntimeExceptionDao<Contact, Integer> dao;
+
   /**
    * On Activity Creation initialize all UI elements.
    */
@@ -40,7 +43,6 @@ OnItemSelectedListener {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
-    doSampleDatabaseStuff("onCreate");
     messageTxt = (EditText) findViewById(R.id.viewSmsText);
     Button sendSMSButton = (Button) findViewById(R.id.btnSendSms);
     encryptBtn = (Button) findViewById(R.id.btnEncrptSms);
@@ -49,6 +51,17 @@ OnItemSelectedListener {
     Button email = (Button) findViewById(R.id.btnEmail);
     Button readSms = (Button) findViewById(R.id.btnReadSms);
     Button readMails = (Button) findViewById(R.id.btnReadEmail);
+
+    dao = getHelper().getRuntimeExceptionDao(Contact.class);
+    queryForAll();
+    try {
+      addContact("swap@gmail.com", "swap");
+    } catch (NoSuchAlgorithmException e1) {
+      e1.printStackTrace();
+    } catch (UnsupportedEncodingException e1) {
+      e1.printStackTrace();
+    }
+
     final MessageUtil messageUtil = new MessageUtil(this);
 
     messageTxt.addTextChangedListener(new TextWatcher() {
@@ -173,54 +186,26 @@ OnItemSelectedListener {
   }
 
   /**
-   * Do our sample database stuff.
+   * Query for all the regs
    */
-  private void doSampleDatabaseStuff(String action) {
-    // get our dao
-    RuntimeExceptionDao<User, Integer> simpleDao = getHelper()
-    .getSimpleDataDao();
+  private void queryForAll() {
     // query for all of the data objects in the database
-    List<User> list = simpleDao.queryForAll();
+    List<Contact> list = dao.queryForAll();
     // our string builder for building the content-view
     StringBuilder sb = new StringBuilder();
-    sb.append("got ").append(list.size()).append(" entries in ").append(action)
-    .append("\n");
 
-    // if we already have items in the database
-    int simpleC = 0;
-    for (User simple : list) {
-      sb.append("------------------------------------------\n");
-      sb.append("[").append(simpleC).append("] = ").append(simple).append("\n");
-      simpleC++;
+    sb.append("Found " + list.size() + " resultsn");
+    for (Contact contact : list) {
+      sb.append(contact.toString() + "n");
     }
-    sb.append("------------------------------------------\n");
-    for (User simple : list) {
-      simpleDao.delete(simple);
-      sb.append("deleted id ").append(simple.getId()).append("\n");
-      Log.i("User", "deleting simple(" + simple.getId() + ")");
-      simpleC++;
-    }
-    int createNum;
-    do {
-      createNum = new Random().nextInt(3) + 1;
-    } while (createNum == list.size());
-    for (int i = 0; i < createNum; i++) {
-      // create a new simple object
-      long millis = System.currentTimeMillis();
-      User simple = new User();
-      // store it in the database
-      simpleDao.create(simple);
-      Log.i("User", "created simple(" + millis + ")");
-      // output it
-      sb.append("------------------------------------------\n");
-      sb.append("created new entry #").append(i + 1).append(":\n");
-      sb.append(simple).append("\n");
-      try {
-        Thread.sleep(5);
-      } catch (InterruptedException e) {
-        // ignore
-      }
-    }
-    Log.i("User", "Done with page at " + System.currentTimeMillis());
+    Log.i("sb.toString()", sb.toString());
+  }
+
+  private void addContact(String Email, String password)
+  throws NoSuchAlgorithmException, UnsupportedEncodingException {
+    StringBuilder sb = new StringBuilder();
+    sb.append("Added contact " + Email + " password " + password);
+    dao.create(new Contact(Email, password));
+    Log.i("results", sb.toString());
   }
 }
