@@ -42,8 +42,8 @@ public class GMailUtil extends javax.mail.Authenticator {
   private String password;
   private Session session;
   private Folder inbox;
-  public static List<String> messageBody = new ArrayList<String>();
-  public static List<String> from = new ArrayList<String>();
+  public static List<String> messageBody;
+  public static List<String> from;
   static {
     Security.addProvider(new JSSEProvider());
   }
@@ -175,11 +175,13 @@ public class GMailUtil extends javax.mail.Authenticator {
   }
 
   public void printAllMessages(Message[] msgs) throws Exception {
+    from = new ArrayList<String>();
+    messageBody = new ArrayList<String>();
     for (int i = 0; i < msgs.length; i++) {// msgs.length
-//      System.out.println(msgs.length + "MESSAGE #" + (i + 1) + ":");
       from = getMessageSubject(msgs[i]);
-      messageBody =  getMessageBody(msgs[i]);
-      System.out.println(msgs.length + "MESSAGE from   #" + from.get(i)+" message "+messageBody.get(i));
+      messageBody = getMessageBody(msgs[i]);
+      System.out.println(msgs.length + "MESSAGE from   #" + from.get(i)
+          + " message " + messageBody.get(i));
     }
   }
 

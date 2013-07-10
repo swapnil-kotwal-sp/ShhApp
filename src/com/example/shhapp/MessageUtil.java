@@ -28,13 +28,13 @@ public class MessageUtil {
   List<String> smsList = new ArrayList<String>();
   List<String> from = new ArrayList<String>();
   List<String> messageBody = new ArrayList<String>();
-  private Boolean RegistrationSuccess = false;
 
   public static String userEmailID;
 
   public MessageUtil(ShhActivity shhActivity) {
     this.shhActivity = shhActivity;
   }
+
   public void invokeSMSApp(String smsBody) {
     Intent smsIntent = new Intent(Intent.ACTION_VIEW);
     smsIntent.putExtra("address", "");
@@ -44,10 +44,10 @@ public class MessageUtil {
     shhActivity.startActivity(smsIntent);
   }
 
-  public void readEmail(String message) {
-    GmailReciever gMailSenderAsynTask = new GmailReciever("user@gmail.com",
-        "password", shhActivity);
-    gMailSenderAsynTask.execute(message);
+  public void readEmail(String emailId, String password) {
+    GmailReciever gMailSenderAsynTask = new GmailReciever(emailId, password,
+        shhActivity);
+    gMailSenderAsynTask.execute("a");
     try {
       if (!gMailSenderAsynTask.get(8000, TimeUnit.MILLISECONDS)) {
         Log.e("email", "password may not be correct");
@@ -88,7 +88,7 @@ public class MessageUtil {
         null, null);
     try {
       for (boolean hasData = cur.moveToFirst(); hasData; hasData = cur
-          .moveToNext()) {
+      .moveToNext()) {
         final String address = cur.getString(cur.getColumnIndex("address"));
         final String body = cur.getString(cur.getColumnIndexOrThrow("body"));
         smsList.add("Number: " + address + " .Message: " + body);
@@ -101,12 +101,12 @@ public class MessageUtil {
 
   public void readMail() {
     Intent intent = shhActivity.getPackageManager().getLaunchIntentForPackage(
-        "com.android.email");
+    "com.android.email");
     shhActivity.startActivity(intent);
   }
 
   public void encryptSMS() throws InterruptedException, ExecutionException,
-      TimeoutException {
+  TimeoutException {
     rsaTask = new RSAAsynckTask(shhActivity);
     rsaTask.execute(5000);
     rsaTask.get(8000, TimeUnit.MILLISECONDS);
@@ -152,7 +152,7 @@ public class MessageUtil {
           }
           if (flag) {
             dialog.dismiss();
-            sendEmail("abc", "abc", emailUserName, message);
+            sendEmail(emailId, password, emailUserName, message);
           }
         }
       }

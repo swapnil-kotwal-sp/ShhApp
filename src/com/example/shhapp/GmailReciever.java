@@ -20,6 +20,7 @@ public class GmailReciever extends AsyncTask<String, Boolean, Boolean> {
   private Activity shhActivity;
   List<String> from = new ArrayList<String>();
   List<String> messageBody = new ArrayList<String>();
+
   protected void onPreExecute() {
     // Show progress Dialog here
     super.onPreExecute();
@@ -35,14 +36,15 @@ public class GmailReciever extends AsyncTask<String, Boolean, Boolean> {
 
   }
 
-  public GmailReciever(final String sender, final String senderPassWord, Activity activity) {
+  public GmailReciever(final String sender, final String senderPassWord,
+      Activity activity) {
     super();
     this.sender = sender;
     this.senderPassWord = senderPassWord;
     this.shhActivity = activity;
   }
 
-  protected final Boolean doInBackground(final String... logArray) {
+  protected final Boolean doInBackground(String... agrs) {
     GMailUtil gMailUtil = new GMailUtil(sender, senderPassWord);
     try {
       gMailUtil.readMails();
@@ -63,8 +65,9 @@ public class GmailReciever extends AsyncTask<String, Boolean, Boolean> {
     }
     if (success) {
       Toast.makeText(shhActivity, "All Email has been read", Toast.LENGTH_LONG)
-          .show();
+      .show();
     } else
-      Toast.makeText(shhActivity, "Email not able to read", Toast.LENGTH_LONG).show();
+      Toast.makeText(shhActivity, "Email not able to read", Toast.LENGTH_LONG)
+      .show();
   }
 }

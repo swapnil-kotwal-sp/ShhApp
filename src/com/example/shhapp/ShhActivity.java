@@ -32,7 +32,7 @@ OnItemSelectedListener {
   List<String> messageBody = new ArrayList<String>();
   Spinner spinnerCategory;
   Spinner spinnerReadMail;
-
+  private List<String> creadentials = new ArrayList<String>();
   private RuntimeExceptionDao<Contact, Integer> dao;
 
   /**
@@ -53,7 +53,6 @@ OnItemSelectedListener {
 
     dao = getHelper().getRuntimeExceptionDao(Contact.class);
     final MessageUtil messageUtil = new MessageUtil(this);
-
     messageTxt.addTextChangedListener(new TextWatcher() {
       @Override
       public void afterTextChanged(Editable arg0) {
@@ -94,11 +93,12 @@ OnItemSelectedListener {
     sendEmail.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View arg0) {
-        List<String> creadentials = ShhActivity.this.isRegisteredUser();
-        if(creadentials.size() > 0){
-          messageUtil.getRecieverMailIdAndSendMail(creadentials.get(0),creadentials.get(1), messageTxt.getText()
-              .toString(), ShhActivity.this);
-        }else 
+        creadentials = ShhActivity.this.isRegisteredUser();
+        if (creadentials.size() > 0) {
+          messageUtil.getRecieverMailIdAndSendMail(creadentials.get(0),
+              creadentials.get(1), messageTxt.getText().toString(),
+              ShhActivity.this);
+        } else
           messageUtil.registerUserMailId();
       }
     });
@@ -116,14 +116,18 @@ OnItemSelectedListener {
     readMails.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View arg0) {
-        messageUtil.readEmail("a");
-        List<String> from = GMailUtil.from;
-        messageBody = GMailUtil.messageBody;
-        spinnerReadMail = (Spinner) findViewById(R.id.Spinner01);
-        ArrayAdapter<String> mailAdapter = new ArrayAdapter<String>(
-            ShhActivity.this, android.R.layout.simple_spinner_item, from);
-        spinnerReadMail.setAdapter(mailAdapter);
-        spinnerReadMail.setOnItemSelectedListener(ShhActivity.this);
+        creadentials = ShhActivity.this.isRegisteredUser();
+        if (creadentials.size() > 0) {
+          messageUtil.readEmail(creadentials.get(0), creadentials.get(1));
+          List<String> from = GMailUtil.from;
+          messageBody = GMailUtil.messageBody;
+          spinnerReadMail = (Spinner) findViewById(R.id.Spinner01);
+          ArrayAdapter<String> mailAdapter = new ArrayAdapter<String>(
+              ShhActivity.this, android.R.layout.simple_spinner_item, from);
+          spinnerReadMail.setAdapter(mailAdapter);
+          spinnerReadMail.setOnItemSelectedListener(ShhActivity.this);
+        } else
+          messageUtil.registerUserMailId();
       }
     });
   }
@@ -142,6 +146,7 @@ OnItemSelectedListener {
 
     switch (parent.getId()) {
     case R.id.Spinner01:
+      Log.i("body index ", messageBody.size() + " position " + pos);
       messageTxt.setText(messageBody.get(pos));
       break;
     case R.id.spinner:
@@ -164,24 +169,18 @@ OnItemSelectedListener {
   private List<String> queryForAll() {
     // query for all of the data objects in the database
     List<Contact> list = dao.queryForAll();
-    // our string builder for building the content-view
-    StringBuilder sb = new StringBuilder();
-
-    sb.append("Found " + list.size() + " resultsn");
     List<String> creadentials = new ArrayList<String>();
     for (Contact contact : list) {
       creadentials.add(contact.email);
       creadentials.add(contact.password);
-      sb.append(contact.toString() + "n");
     }
-    Log.i("sb.toString()", sb.toString());
     return creadentials;
   }
 
   private void addContact(String Email, String password)
   throws NoSuchAlgorithmException, UnsupportedEncodingException {
     StringBuilder sb = new StringBuilder();
-    sb.append("Added contact " + Email + " password " + password);
+    sb.append("Added contact " + Email);
     dao.create(new Contact(Email, password));
     Log.i("results", sb.toString());
   }
@@ -190,10 +189,11 @@ OnItemSelectedListener {
     return queryForAll();
   }
 
-  public void saveUserInfo(String userName, String password) throws NoSuchAlgorithmException, UnsupportedEncodingException {
-    addContact(userName,password);
+  public void saveUserInfo(String userName, String password)
+  throws NoSuchAlgorithmException, UnsupportedEncodingException {
+    addContact(userName, password);
   }
-  
+
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
     // Inflate the menu; this adds items to the action bar if it is present.
