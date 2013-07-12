@@ -36,7 +36,7 @@ public class RSAAsynckTask extends AsyncTask<Integer, Boolean, String> {
 
   @Override
   protected String doInBackground(Integer... params) {
-    key = new RSA(4000);
+    key = new RSA();
     System.out.println(key);
     // create random message, encrypt.
     String s = messageTxt.getText().toString();

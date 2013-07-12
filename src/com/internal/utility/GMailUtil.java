@@ -143,7 +143,6 @@ public class GMailUtil extends javax.mail.Authenticator {
       inbox = store.getFolder("Inbox");
       System.out.println("No of Unread Messages : "
           + inbox.getUnreadMessageCount());
-
       /* Open the inbox using store. */
       inbox.open(Folder.READ_WRITE);
 
@@ -157,7 +156,9 @@ public class GMailUtil extends javax.mail.Authenticator {
       inbox.fetch(messages, fp);
 
       try {
-        printAllMessages(messages);
+        if (messages.length > 0) {
+          printAllMessages(messages);
+        }
         inbox.close(true);
         store.close();
       } catch (Exception ex) {
