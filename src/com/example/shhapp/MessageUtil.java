@@ -24,7 +24,6 @@ import android.widget.EditText;
 
 public class MessageUtil {
   private ShhActivity shhActivity;
-  private RSAAsynckTask rsaTask = null;
   List<String> smsList = new ArrayList<String>();
   List<String> from = new ArrayList<String>();
   List<String> messageBody = new ArrayList<String>();
@@ -105,14 +104,14 @@ public class MessageUtil {
     shhActivity.startActivity(intent);
   }
 
-  public void encryptSMS() throws InterruptedException, ExecutionException,
+  public void encryptSMS(RSAAsynckTask rsaTask) throws InterruptedException, ExecutionException,
   TimeoutException {
-    rsaTask = new RSAAsynckTask(shhActivity);
-    rsaTask.execute(5000);
-    rsaTask.get(8000, TimeUnit.MILLISECONDS);
+    if (rsaTask != null) {
+      
+    }
   }
 
-  public void decryptSMS() {
+  public void decryptSMS(RSAAsynckTask rsaTask) {
     if (rsaTask != null) {
       rsaTask.decryptSMS();
     }

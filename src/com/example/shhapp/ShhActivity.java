@@ -1,6 +1,8 @@
 package com.example.shhapp;
 
+/**  **/
 import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +20,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.google.analytics.tracking.android.EasyTracker;
 import com.internal.utility.GMailUtil;
@@ -28,12 +31,17 @@ public class ShhActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 OnItemSelectedListener {
   EditText messageTxt;
   Button encryptBtn;
+  Button decryptBtn;
+  BigInteger encrypt;
+  BigInteger decrypt;
   List<String> smsArray = new ArrayList<String>();
   List<String> messageBody = new ArrayList<String>();
   Spinner spinnerCategory;
   Spinner spinnerReadMail;
   private List<String> creadentials = new ArrayList<String>();
   private RuntimeExceptionDao<Contact, Integer> dao;
+
+  private RSA key = null;
 
   /**
    * On Activity Creation initialize all UI elements.
@@ -42,14 +50,19 @@ OnItemSelectedListener {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
+    // Initialize all UI elements
     messageTxt = (EditText) findViewById(R.id.viewSmsText);
     Button sendSMSButton = (Button) findViewById(R.id.btnSendSms);
     encryptBtn = (Button) findViewById(R.id.btnEncrptSms);
     encryptBtn.setEnabled(false);
-    Button decryptBtn = (Button) findViewById(R.id.btnDecrypt);
+    decryptBtn = (Button) findViewById(R.id.btnDecrypt);
+    decryptBtn.setEnabled(false);
     Button sendEmail = (Button) findViewById(R.id.btnEmail);
     Button readSms = (Button) findViewById(R.id.btnReadSms);
     Button readMails = (Button) findViewById(R.id.btnReadEmail);
+
+    // Initialize encryption object
+    key = new RSA();
 
     dao = getHelper().getRuntimeExceptionDao(Contact.class);
     final MessageUtil messageUtil = new MessageUtil(this);
@@ -71,17 +84,40 @@ OnItemSelectedListener {
     encryptBtn.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View arg0) {
-        try {
-          messageUtil.encryptSMS();
-        } catch (Exception e) {
-          e.printStackTrace();
+        if (key != null) {
+          try {
+            String s = messageTxt.getText().toString();
+            BigInteger message = new BigInteger(s.getBytes());
+            encrypt = key.encrypt(message);
+            messageTxt.setText(encrypt + "");
+          } catch (Exception e) {
+            e.printStackTrace();
+          }
         }
       }
     });
+
     decryptBtn.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View arg0) {
-        messageUtil.decryptSMS();
+        if (key != null) {
+          if (encrypt != null) {
+            decrypt = key.decrypt(encrypt);
+            messageTxt.setText(new String(decrypt.toByteArray()));
+          } else if (messageTxt.getText().length() > 0
+              && !messageTxt.getText().equals("")) {
+            try {
+              decrypt = (BigInteger) key.decrypt(new BigInteger(messageTxt.getText().toString()));
+              messageTxt.setText(new String(decrypt.toByteArray()));
+            } catch (Exception e) {
+              e.printStackTrace();
+              Toast.makeText(ShhActivity.this, "Your text cannot be decrypted",
+                  Toast.LENGTH_SHORT).show();
+            }
+          } else
+            Toast.makeText(ShhActivity.this, "Your text cannot be decrypted",
+                Toast.LENGTH_SHORT).show();
+        }
       }
     });
     sendSMSButton.setOnClickListener(new OnClickListener() {
@@ -124,8 +160,10 @@ OnItemSelectedListener {
           spinnerReadMail = (Spinner) findViewById(R.id.Spinner01);
           ArrayAdapter<String> mailAdapter = new ArrayAdapter<String>(
               ShhActivity.this, android.R.layout.simple_spinner_item, from);
-          spinnerReadMail.setAdapter(mailAdapter);
-          spinnerReadMail.setOnItemSelectedListener(ShhActivity.this);
+          if (spinnerReadMail != null) {
+            spinnerReadMail.setAdapter(mailAdapter);
+            spinnerReadMail.setOnItemSelectedListener(ShhActivity.this);
+          }
         } else
           messageUtil.registerUserMailId();
       }
@@ -134,9 +172,15 @@ OnItemSelectedListener {
 
   protected void enableSubmitIfReady() {
     if (messageTxt.getText().toString().trim().length() > 0) {
-      encryptBtn.setEnabled(true);
+      if (key != null) {
+        encryptBtn.setEnabled(true);
+      }
+      if (key != null) {
+        decryptBtn.setEnabled(true);
+      }
     } else {
       encryptBtn.setEnabled(false);
+      decryptBtn.setEnabled(false);
     }
   }
 
@@ -146,8 +190,10 @@ OnItemSelectedListener {
 
     switch (parent.getId()) {
     case R.id.Spinner01:
-      Log.i("body index ", messageBody.size() + " position " + pos);
-      messageTxt.setText(messageBody.get(pos));
+      if (messageBody.size() > 0) {
+        Log.i("body index ", messageBody.size() + " position " + pos);
+        messageTxt.setText(messageBody.get(pos));
+      }
       break;
     case R.id.spinner:
       messageTxt.setText(textSms);
