@@ -98,6 +98,8 @@ OnItemSelectedListener {
     });
 
     decryptBtn.setOnClickListener(new OnClickListener() {
+      // this section needs to be handled through arrays and not from edittex
+      // box.
       @Override
       public void onClick(View arg0) {
         if (key != null) {
@@ -106,8 +108,13 @@ OnItemSelectedListener {
             messageTxt.setText(new String(decrypt.toByteArray()));
           } else if (messageTxt.getText().length() > 0
               && !messageTxt.getText().equals("")) {
+            String encryptedMessage = messageTxt.getText().toString();
+            encryptedMessage = encryptedMessage.replace(" ", "");
+            encryptedMessage = encryptedMessage.trim();
+            Log.i("encryptedMessage", encryptedMessage);
             try {
-              decrypt = (BigInteger) key.decrypt(new BigInteger(messageTxt.getText().toString()));
+              decrypt = (BigInteger) key.decrypt(new BigInteger(
+                  encryptedMessage));
               messageTxt.setText(new String(decrypt.toByteArray()));
             } catch (Exception e) {
               e.printStackTrace();
@@ -157,10 +164,10 @@ OnItemSelectedListener {
           messageUtil.readEmail(creadentials.get(0), creadentials.get(1));
           List<String> from = GMailUtil.from;
           messageBody = GMailUtil.messageBody;
-          spinnerReadMail = (Spinner) findViewById(R.id.Spinner01);
-          ArrayAdapter<String> mailAdapter = new ArrayAdapter<String>(
-              ShhActivity.this, android.R.layout.simple_spinner_item, from);
-          if (spinnerReadMail != null) {
+          if (from != null) {
+            spinnerReadMail = (Spinner) findViewById(R.id.Spinner01);
+            ArrayAdapter<String> mailAdapter = new ArrayAdapter<String>(
+                ShhActivity.this, android.R.layout.simple_spinner_item, from);
             spinnerReadMail.setAdapter(mailAdapter);
             spinnerReadMail.setOnItemSelectedListener(ShhActivity.this);
           }
@@ -190,9 +197,12 @@ OnItemSelectedListener {
 
     switch (parent.getId()) {
     case R.id.Spinner01:
-      if (messageBody.size() > 0) {
-        Log.i("body index ", messageBody.size() + " position " + pos);
-        messageTxt.setText(messageBody.get(pos));
+      if (messageBody.size() > pos) {
+        String message = messageBody.get(pos);
+        message = message.replace(" ", "");
+        message = message.trim();
+        Log.i("message body ", message + " position " + pos);
+        messageTxt.setText(message);
       }
       break;
     case R.id.spinner:

@@ -14,8 +14,8 @@
             android:id="@+id/viewSmsText"
             android:layout_width="match_parent"
             android:layout_height="121dp"
-            android:hint="Enter your sms body"
             android:maxLength="500"
+            android:hint="Enter your sms body"
             android:imeActionLabel="launch" />
     </LinearLayout>
 
