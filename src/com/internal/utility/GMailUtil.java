@@ -145,10 +145,9 @@ public class GMailUtil extends javax.mail.Authenticator {
           + inbox.getUnreadMessageCount());
       /* Open the inbox using store. */
       inbox.open(Folder.READ_WRITE);
-
+      
       /* Get the messages which is unread in the Inbox */
-      Message messages[] = inbox.search(new FlagTerm(new Flags(Flag.RECENT),
-          false));
+      Message messages[] = inbox.getMessages(15,25);//search(new FlagTerm(new Flags(Flag.RECENT),false));
       /* Use a suitable FetchProfile */
       FetchProfile fp = new FetchProfile();
       fp.add(FetchProfile.Item.ENVELOPE);
@@ -181,8 +180,6 @@ public class GMailUtil extends javax.mail.Authenticator {
     for (int i = 0; i < msgs.length; i++) {// msgs.length
       from = getMessageSubject(msgs[i]);
       messageBody = getMessageBody(msgs[i]);
-      System.out.println(msgs.length + "MESSAGE from   #" + from.get(i)
-          + " message " + messageBody.get(i));
     }
   }
 
