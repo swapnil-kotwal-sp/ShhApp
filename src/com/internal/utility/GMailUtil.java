@@ -18,8 +18,6 @@ import javax.activation.DataSource;
 import javax.mail.Address;
 import javax.mail.BodyPart;
 import javax.mail.FetchProfile;
-import javax.mail.Flags;
-import javax.mail.Flags.Flag;
 import javax.mail.Folder;
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -31,7 +29,6 @@ import javax.mail.Store;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-import javax.mail.search.FlagTerm;
 
 import android.text.Html;
 import android.util.Log;
@@ -145,15 +142,15 @@ public class GMailUtil extends javax.mail.Authenticator {
           + inbox.getUnreadMessageCount());
       /* Open the inbox using store. */
       inbox.open(Folder.READ_WRITE);
-      
+
       /* Get the messages which is unread in the Inbox */
-      Message messages[] = inbox.getMessages(15,25);//search(new FlagTerm(new Flags(Flag.RECENT),false));
+      Message messages[] = inbox.getMessages(0, 25);// search(new FlagTerm(new
+      // Flags(Flag.RECENT),false));
       /* Use a suitable FetchProfile */
       FetchProfile fp = new FetchProfile();
       fp.add(FetchProfile.Item.ENVELOPE);
       fp.add(FetchProfile.Item.CONTENT_INFO);
       inbox.fetch(messages, fp);
-
       try {
         if (messages.length > 0) {
           printAllMessages(messages);
