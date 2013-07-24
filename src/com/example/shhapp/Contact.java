@@ -1,9 +1,26 @@
+
+/*
+ * Copyright 2013 Swapnil Kotwal
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
 package com.example.shhapp;
 
 import com.j256.ormlite.field.DatabaseField;
 
 /**
- * A simple model object to store a Contact
+ * 
+ * DAO Class for datbase mapping.
  */
 public class Contact {
 
@@ -17,14 +34,18 @@ public class Contact {
   Contact() {
     // needed by ormlite
   }
-
-  public Contact(String email, String password) {
+/**
+ * Constructor to initialize the Contact Object.
+ * @param email user email Id
+ * @param password user email password.
+ */
+  public Contact(final String email, final String password) {
     this.password = password;
     this.email = email;
   }
 
   @Override
-  public String toString() {
+  public final String toString() {
     return password + ": " + email;
   }
 }

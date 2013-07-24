@@ -1,3 +1,18 @@
+/*
+ * Copyright 2013 Swapnil Kotwal
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
 package com.example.shhapp;
 
 import java.io.UnsupportedEncodingException;
@@ -22,6 +37,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+/**
+ * 
+ * Utility object for messages.
+ * 
+ */
 public class MessageUtil {
   private ShhActivity shhActivity;
   List<String> smsList = new ArrayList<String>();
@@ -30,11 +50,22 @@ public class MessageUtil {
 
   public static String userEmailID;
 
-  public MessageUtil(ShhActivity shhActivity) {
+  /**
+   * Constructor for initializing MessageUtil object.
+   * 
+   * @param shhActivity
+   *          initializing activity.
+   */
+  public MessageUtil(final ShhActivity shhActivity) {
     this.shhActivity = shhActivity;
   }
 
-  public void invokeSMSApp(String smsBody) {
+  /**
+   * 
+   * @param smsBody
+   *          sms text.
+   */
+  public final void invokeSMSApp(final String smsBody) {
     Intent smsIntent = new Intent(Intent.ACTION_VIEW);
     smsIntent.putExtra("address", "");
     smsIntent.putExtra("sms_body", smsBody);
@@ -43,7 +74,15 @@ public class MessageUtil {
     shhActivity.startActivity(smsIntent);
   }
 
-  public void readEmail(String emailId, String password) {
+  /**
+   * read registered users emails.
+   * 
+   * @param emailId
+   *          users email Id.
+   * @param password
+   *          users email password.
+   */
+  public final void readEmail(final String emailId, final String password) {
     GmailReciever gMailSenderAsynTask = new GmailReciever(emailId, password,
         shhActivity);
     gMailSenderAsynTask.execute("a");
@@ -62,12 +101,16 @@ public class MessageUtil {
    * Send mail to registered Gmail user id.
    * 
    * @param emailId
+   *          users email Id.
    * @param password
+   *          users email password.
    * @param reciverMailId
+   *          reciver's email Id.
    * @param message
+   *          mail body.
    */
-  public void sendEmail(String emailId, String password, String reciverMailId,
-      String message) {
+  public final void sendEmail(final String emailId, final String password,
+      final String reciverMailId, final String message) {
     GMailSenderAsynTask gMailSenderAsynTask = new GMailSenderAsynTask(emailId,
         password, reciverMailId, shhActivity);
     gMailSenderAsynTask.execute(message);
@@ -81,7 +124,12 @@ public class MessageUtil {
     gMailSenderAsynTask.cancel(true);
   }
 
-  public List<String> SMSRead() {
+  /**
+   * Reads inbox SMS.
+   * 
+   * @return List<String> messages.
+   */
+  public final List<String> SMSRead() {
     Uri uriSMSURI = Uri.parse("content://sms/inbox");
     Cursor cur = shhActivity.getContentResolver().query(uriSMSURI, null, null,
         null, null);
@@ -98,20 +146,38 @@ public class MessageUtil {
     return smsList;
   }
 
-  public void readMail() {
+  /**
+   * read registered user's mails.
+   */
+  public final void readMail() {
     Intent intent = shhActivity.getPackageManager().getLaunchIntentForPackage(
     "com.android.email");
     shhActivity.startActivity(intent);
   }
 
-  public void encryptSMS(RSAAsynckTask rsaTask) throws InterruptedException, ExecutionException,
-  TimeoutException {
+  /**
+   * encrypt given message.
+   * 
+   * @param rsaTask
+   *          rsaAsyncktask object.
+   * @throws InterruptedException
+   * @throws ExecutionException
+   * @throws TimeoutException
+   */
+  public final void encryptSMS(final RSAAsynckTask rsaTask)
+  throws InterruptedException, ExecutionException, TimeoutException {
     if (rsaTask != null) {
-      
+
     }
   }
 
-  public void decryptSMS(RSAAsynckTask rsaTask) {
+  /**
+   * decrypt's message.
+   * 
+   * @param rsaTask
+   *          rsaAsyncktask object.
+   */
+  public final void decryptSMS(final RSAAsynckTask rsaTask) {
     if (rsaTask != null) {
       rsaTask.decryptSMS();
     }
@@ -121,12 +187,16 @@ public class MessageUtil {
    * Dialog for getting user's name and email_id.
    * 
    * @param emailId
+   *          user mail Id.
    * @param password
+   *          user mail password.
    * @param message
+   *          message to be delivered.
    * @param activity
+   *          initializing activity.
    */
-  public void getRecieverMailIdAndSendMail(final String emailId,
-      final String password, final String message, Activity activity) {
+  public final void getRecieverMailIdAndSendMail(final String emailId,
+      final String password, final String message, final Activity activity) {
     final AlertDialog.Builder alert = new AlertDialog.Builder(activity);
     final AlertDialog dialog = alert.create();
     LayoutInflater inflater = activity.getLayoutInflater();
@@ -158,7 +228,13 @@ public class MessageUtil {
     });
   }
 
-  // Java mail API to validate email address.
+  /**
+   * Java mail API to validate email address.
+   * 
+   * @param email
+   *          email address.
+   * @return boolean
+   */
   public static boolean validEmailAddress(final String email) {
     boolean result = true;
     try {
@@ -170,7 +246,10 @@ public class MessageUtil {
     return result;
   }
 
-  public void registerUserMailId() {
+  /**
+   * Register user email and password.
+   */
+  public final void registerUserMailId() {
     final AlertDialog.Builder alert = new AlertDialog.Builder(shhActivity);
     final AlertDialog dialog = alert.create();
     LayoutInflater inflater = shhActivity.getLayoutInflater();

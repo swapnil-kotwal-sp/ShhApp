@@ -1,8 +1,19 @@
-package com.internal.utility;
-
 /*
- * @author Swapnil
+ * Copyright 2013 Swapnil Kotwal
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
+package com.internal.utility;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -33,6 +44,11 @@ import javax.mail.internet.MimeMessage;
 import android.text.Html;
 import android.util.Log;
 
+/**
+ * 
+ * Utility object to interact with GMail.
+ * 
+ */
 public class GMailUtil extends javax.mail.Authenticator {
   private String mailhost = "smtp.gmail.com";
   private String user;
@@ -45,6 +61,14 @@ public class GMailUtil extends javax.mail.Authenticator {
     Security.addProvider(new JSSEProvider());
   }
 
+  /**
+   * Constructor for initilising GMailUtil object
+   * 
+   * @param user
+   *          gmail Id.
+   * @param password
+   *          gmail password.
+   */
   public GMailUtil(final String user, final String password) {
     this.user = user;
     this.password = password;
@@ -63,10 +87,26 @@ public class GMailUtil extends javax.mail.Authenticator {
     session = Session.getDefaultInstance(props, this);
   }
 
+  /**
+   * Authenticate password here.
+   */
   protected final PasswordAuthentication getPasswordAuthentication() {
     return new PasswordAuthentication(user, password);
   }
 
+  /**
+   * Send maiil through java mail API's.
+   * 
+   * @param subject
+   *          mail subject.
+   * @param body
+   *          mail body.
+   * @param sender
+   *          mail sender Id.
+   * @param recipients
+   *          mail reciever id.
+   * @throws Exception
+   */
   public final synchronized void sendMail(final String subject,
       final String body, final String sender, final String recipients)
   throws Exception {
@@ -87,6 +127,11 @@ public class GMailUtil extends javax.mail.Authenticator {
 
   }
 
+  /**
+   * 
+   * Object for Byte Array data.
+   * 
+   */
   public class ByteArrayDataSource implements DataSource {
     private byte[] data;
     private String type;
@@ -127,7 +172,10 @@ public class GMailUtil extends javax.mail.Authenticator {
     }
   }
 
-  public void readMails() {
+  /**
+   * read mails.
+   */
+  public final void readMails() {
     /* Set the mail properties */
 
     Properties props = System.getProperties();
@@ -144,7 +192,7 @@ public class GMailUtil extends javax.mail.Authenticator {
       inbox.open(Folder.READ_WRITE);
 
       /* Get the messages which is unread in the Inbox */
-      Message messages[] = inbox.getMessages(0, 25);// search(new FlagTerm(new
+      Message[] messages = inbox.getMessages(0, 25);// search(new FlagTerm(new
       // Flags(Flag.RECENT),false));
       /* Use a suitable FetchProfile */
       FetchProfile fp = new FetchProfile();
@@ -171,7 +219,14 @@ public class GMailUtil extends javax.mail.Authenticator {
     return;
   }
 
-  public void printAllMessages(Message[] msgs) throws Exception {
+  /**
+   * Store sender's id and message body into array form.
+   * 
+   * @param msgs
+   *          Message Array.
+   * @throws Exception
+   */
+  public final void printAllMessages(final Message[] msgs) throws Exception {
     from = new ArrayList<String>();
     messageBody = new ArrayList<String>();
     for (int i = 0; i < msgs.length; i++) {// msgs.length
@@ -180,8 +235,15 @@ public class GMailUtil extends javax.mail.Authenticator {
     }
   }
 
-  public List<String> getMessageBody(Message msg) throws IOException,
-  MessagingException {
+  /**
+   * get mail body
+   * @param msg Message.
+   * @return List<String>
+   * @throws IOException
+   * @throws MessagingException
+   */
+  public final List<String> getMessageBody(final Message msg)
+  throws IOException, MessagingException {
     Object multipartObj = msg.getContent();
     if (multipartObj instanceof Multipart) {
       Multipart multipart = (Multipart) multipartObj;
@@ -201,13 +263,18 @@ public class GMailUtil extends javax.mail.Authenticator {
     }
     return messageBody;
   }
-
-  public String stripHtml(String html) {
+/**
+ * Remove HTML from mail body.
+ * @param html
+ * @return
+ */
+  public final String stripHtml(final String html) {
     return Html.fromHtml(html).toString();
   }
 
   /* Print the envelope(FromAddress,ReceivedDate,Subject) */
-  public List<String> getMessageSubject(Message message) throws Exception {
+  public final List<String> getMessageSubject(final Message message)
+  throws Exception {
     Address[] a;
     // FROM
     if ((a = message.getFrom()) != null) {
