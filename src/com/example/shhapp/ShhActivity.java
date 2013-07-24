@@ -1,6 +1,21 @@
+
+/*
+ * Copyright 2013 Swapnil Kotwal
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
 package com.example.shhapp;
 
-/**  **/
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
@@ -27,6 +42,10 @@ import com.internal.utility.GMailUtil;
 import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
 
+/**
+ * 
+ * On Activity Creation initialize all UI elements.
+ */
 public class ShhActivity extends OrmLiteBaseActivity<DatabaseHelper> implements
 OnItemSelectedListener {
   EditText messageTxt;
@@ -43,11 +62,8 @@ OnItemSelectedListener {
 
   private RSA key = null;
 
-  /**
-   * On Activity Creation initialize all UI elements.
-   */
   @Override
-  protected void onCreate(Bundle savedInstanceState) {
+  protected final void onCreate(final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
     // Initialize all UI elements
@@ -68,22 +84,23 @@ OnItemSelectedListener {
     final MessageUtil messageUtil = new MessageUtil(this);
     messageTxt.addTextChangedListener(new TextWatcher() {
       @Override
-      public void afterTextChanged(Editable arg0) {
+      public void afterTextChanged(final Editable arg0) {
         enableSubmitIfReady();
       }
 
       @Override
-      public void beforeTextChanged(CharSequence s, int start, int count,
-          int after) {
+      public void beforeTextChanged(final CharSequence s, final int start,
+          final int count, final int after) {
       }
 
       @Override
-      public void onTextChanged(CharSequence s, int start, int before, int count) {
+      public void onTextChanged(final CharSequence s, final int start,
+          final int before, final int count) {
       }
     });
     encryptBtn.setOnClickListener(new OnClickListener() {
       @Override
-      public void onClick(View arg0) {
+      public void onClick(final View arg0) {
         if (key != null) {
           try {
             String s = messageTxt.getText().toString();
@@ -101,7 +118,7 @@ OnItemSelectedListener {
       // this section needs to be handled through arrays and not from edittex
       // box.
       @Override
-      public void onClick(View arg0) {
+      public void onClick(final View arg0) {
         if (key != null) {
           if (encrypt != null) {
             decrypt = key.decrypt(encrypt);
@@ -121,33 +138,35 @@ OnItemSelectedListener {
               Toast.makeText(ShhActivity.this, "Your text cannot be decrypted",
                   Toast.LENGTH_SHORT).show();
             }
-          } else
+          } else {
             Toast.makeText(ShhActivity.this, "Your text cannot be decrypted",
                 Toast.LENGTH_SHORT).show();
+          }
         }
       }
     });
     sendSMSButton.setOnClickListener(new OnClickListener() {
       @Override
-      public void onClick(View arg0) {
+      public void onClick(final View arg0) {
         messageUtil.invokeSMSApp(messageTxt.getText().toString());
       }
     });
     sendEmail.setOnClickListener(new OnClickListener() {
       @Override
-      public void onClick(View arg0) {
+      public void onClick(final View arg0) {
         creadentials = ShhActivity.this.isRegisteredUser();
         if (creadentials.size() > 0) {
           messageUtil.getRecieverMailIdAndSendMail(creadentials.get(0),
               creadentials.get(1), messageTxt.getText().toString(),
               ShhActivity.this);
-        } else
+        } else {
           messageUtil.registerUserMailId();
+        }
       }
     });
     readSms.setOnClickListener(new OnClickListener() {
       @Override
-      public void onClick(View arg0) {
+      public void onClick(final View arg0) {
         smsArray = messageUtil.SMSRead();
         spinnerCategory = (Spinner) findViewById(R.id.spinner);
         ArrayAdapter<String> categoriesAdapter = new ArrayAdapter<String>(
@@ -158,7 +177,7 @@ OnItemSelectedListener {
     });
     readMails.setOnClickListener(new OnClickListener() {
       @Override
-      public void onClick(View arg0) {
+      public void onClick(final View arg0) {
         creadentials = ShhActivity.this.isRegisteredUser();
         if (creadentials.size() > 0) {
           messageUtil.readEmail(creadentials.get(0), creadentials.get(1));
@@ -171,13 +190,16 @@ OnItemSelectedListener {
             spinnerReadMail.setAdapter(mailAdapter);
             spinnerReadMail.setOnItemSelectedListener(ShhActivity.this);
           }
-        } else
+        } else {
           messageUtil.registerUserMailId();
+        }
       }
     });
   }
-
-  protected void enableSubmitIfReady() {
+/**
+ * Enable submit button.
+ */
+  protected final void enableSubmitIfReady() {
     if (messageTxt.getText().toString().trim().length() > 0) {
       if (key != null) {
         encryptBtn.setEnabled(true);
@@ -192,7 +214,8 @@ OnItemSelectedListener {
   }
 
   @Override
-  public void onItemSelected(AdapterView<?> parent, View arg1, int pos, long id) {
+  public final void onItemSelected(final AdapterView<?> parent,
+      final View arg1, final int pos, final long id) {
     String textSms = parent.getItemAtPosition(pos).toString();
 
     switch (parent.getId()) {
@@ -215,12 +238,14 @@ OnItemSelectedListener {
   }
 
   @Override
-  public void onNothingSelected(AdapterView<?> arg0) {
+  public void onNothingSelected(final AdapterView<?> arg0) {
 
   }
 
   /**
    * Query for all the regs
+   * 
+   * @return List<String>
    */
   private List<String> queryForAll() {
     // query for all of the data objects in the database
@@ -233,7 +258,19 @@ OnItemSelectedListener {
     return creadentials;
   }
 
-  private void addContact(String Email, String password)
+  /**
+   * Save User Email Id and Email Password to database.
+   * 
+   * @param Email
+   *          User Email Id.
+   * @param password
+   *          User's Email password.
+   * @throws NoSuchAlgorithmException
+   *           When given algorithm not matches.
+   * @throws UnsupportedEncodingException
+   *           When Encoding is not supported.
+   */
+  private void addContact(final String Email, final String password)
   throws NoSuchAlgorithmException, UnsupportedEncodingException {
     StringBuilder sb = new StringBuilder();
     sb.append("Added contact " + Email);
@@ -241,33 +278,50 @@ OnItemSelectedListener {
     Log.i("results", sb.toString());
   }
 
-  public List<String> isRegisteredUser() {
+  /**
+   * Database Query for all available entries.
+   * 
+   * @return List<String>
+   */
+  public final List<String> isRegisteredUser() {
     return queryForAll();
   }
 
-  public void saveUserInfo(String userName, String password)
+  /**
+   * Used to store user information.
+   * 
+   * @param userName
+   *          User's Email Id.
+   * @param password
+   *          User's Email password.
+   * @throws NoSuchAlgorithmException
+   *           When given algorithm not matches.
+   * @throws UnsupportedEncodingException
+   *           When Encoding is not supported.
+   */
+  public final void saveUserInfo(final String userName, final String password)
   throws NoSuchAlgorithmException, UnsupportedEncodingException {
     addContact(userName, password);
   }
 
   @Override
-  public boolean onCreateOptionsMenu(Menu menu) {
+  public final boolean onCreateOptionsMenu(final Menu menu) {
     // Inflate the menu; this adds items to the action bar if it is present.
     getMenuInflater().inflate(R.menu.activity_main, menu);
     return true;
   }
 
   @Override
-  public void onStart() {
+  public final void onStart() {
     super.onStart();
     // Initialise google analytics for this app.
     EasyTracker.getInstance().activityStart(this); // Add this method.
   }
 
   @Override
-  public void onStop() {
+  public final void onStop() {
     super.onStop();
     // The rest of your onStop() code.
-    EasyTracker.getInstance().activityStop(this); // Add this method.
+    EasyTracker.getInstance().activityStop(this);
   }
 }

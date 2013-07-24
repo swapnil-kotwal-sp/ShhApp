@@ -1,3 +1,19 @@
+
+/*
+ * Copyright 2013 Swapnil Kotwal
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
 package com.example.shhapp;
 
 import java.math.BigInteger;
@@ -8,18 +24,32 @@ import android.os.AsyncTask;
 import android.widget.EditText;
 import android.widget.Toast;
 
+/**
+ * 
+ * AsynckTask for encryption and Decryption.
+ * 
+ */
 public class RSAAsynckTask extends AsyncTask<Integer, Boolean, String> {
   private ProgressDialog progress;
   private Activity shhActivity;
   private BigInteger encrypt = null;
   private BigInteger decrypt = null;
   private EditText messageTxt;
-  private  RSA key;
-  public RSAAsynckTask(ShhActivity shhActivity){
+  private RSA key;
+
+  /**
+   * Constructor.
+   * 
+   * @param shhActivity
+   */
+  public RSAAsynckTask(final ShhActivity shhActivity) {
     this.shhActivity = shhActivity;
     this.messageTxt = shhActivity.messageTxt;
   }
-  protected void onPreExecute() {
+/**
+ * on Pre Execute.
+ */
+  protected final void onPreExecute() {
     // Show progress Dialog here
     super.onPreExecute();
 
@@ -35,7 +65,7 @@ public class RSAAsynckTask extends AsyncTask<Integer, Boolean, String> {
   }
 
   @Override
-  protected String doInBackground(Integer... params) {
+  protected final String doInBackground(final Integer... params) {
     key = new RSA();
     System.out.println(key);
     // create random message, encrypt.
@@ -50,10 +80,13 @@ public class RSAAsynckTask extends AsyncTask<Integer, Boolean, String> {
         messageTxt.setText(encrypt + "");
       }
     });
-    return encrypt+"";
+    return encrypt + "";
   }
-  
-  public void decryptSMS() {
+
+  /**
+   * Decrypt inpute text box message.
+   */
+  public final void decryptSMS() {
     if (key != null) {
       decrypt = key.decrypt(encrypt);
       messageTxt.setText(new String(decrypt.toByteArray()));
@@ -62,15 +95,17 @@ public class RSAAsynckTask extends AsyncTask<Integer, Boolean, String> {
           + new String(decrypt.toByteArray()));
     }
   }
+
   @Override
-  protected void onPostExecute(final String success) {
+  protected final void onPostExecute(final String success) {
     if (progress.isShowing()) {
       progress.dismiss();
     }
     if (success != null) {
       Toast.makeText(shhActivity, "Encryption Success", Toast.LENGTH_LONG)
       .show();
-    } else
+    } else {
       Toast.makeText(shhActivity, "Encryption fails", Toast.LENGTH_LONG).show();
+    }
   }
 }
