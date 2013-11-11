@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.DEPENDENCIES"/>
-	<classpathentry exported="true" kind="lib" path="libs/ormlite-core-4.43.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/activation.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/additionnal.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/libGoogleAnalyticsV2.jar"/>
-	<classpathentry exported="true" kind="lib" path="libs/mail.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/ormlite-android-4.43.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/ormlite-core-4.43.jar"/>
+	<classpathentry exported="true" kind="lib" path="C:/Users/swapnil/android-sdks/platforms/android-15/android.jar"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="gen"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
+<<<<<<< HEAD
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
+=======
+	<classpathentry kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
+	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.DEPENDENCIES"/>
+>>>>>>> parent of b652e17... added javadocs to the files.
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

@@ -1,18 +1,3 @@
-/*
- * Copyright 2013 Swapnil Kotwal
- * 
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not
- * use this file except in compliance with the License. You may obtain a copy of
- * the License at
- * 
- * http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
- * the License.
- */
 package com.example.shhapp;
 
 import java.sql.SQLException;
@@ -45,7 +30,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
   private RuntimeExceptionDao<Contact, Integer> simpleRuntimeDao;
 
-  public DatabaseHelper(final Context context) {
+  public DatabaseHelper(Context context) {
     super(context, DATABASE_NAME, null, DATABASE_VERSION, R.raw.ormlite_config);
   }
 
@@ -54,8 +39,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
    * createTable statements here to create the tables that will store your data.
    */
   @Override
-  public final void onCreate(final SQLiteDatabase db,
-      final ConnectionSource connectionSource) {
+  public void onCreate(SQLiteDatabase db, ConnectionSource connectionSource) {
     try {
       TableUtils.createTable(connectionSource, Contact.class);
     } catch (SQLException e) {
@@ -69,9 +53,8 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
    * version number.
    */
   @Override
-  public final void onUpgrade(final SQLiteDatabase db,
-      final ConnectionSource connectionSource, final int oldVersion,
-      final int newVersion) {
+  public void onUpgrade(SQLiteDatabase db, ConnectionSource connectionSource,
+      int oldVersion, int newVersion) {
     try {
       TableUtils.dropTable(connectionSource, Contact.class, true);
     } catch (SQLException e) {
@@ -82,10 +65,8 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
   /**
    * Returns the Database Access Object (DAO) for our SimpleData class. It will
    * create it or just give the cached value.
-   * 
-   * @return simpleDao.
    */
-  public final Dao<Contact, Integer> getDao() throws SQLException {
+  public Dao<Contact, Integer> getDao() throws SQLException {
     if (simpleDao == null) {
       simpleDao = getDao(Contact.class);
     }
@@ -96,10 +77,8 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
    * Returns the RuntimeExceptionDao (Database Access Object) version of a Dao
    * for our SimpleData class. It will create it or just give the cached value.
    * RuntimeExceptionDao only through RuntimeExceptions.
-   * 
-   * @return simpleRuntimeDao.
    */
-  public final RuntimeExceptionDao<Contact, Integer> getSimpleDataDao() {
+  public RuntimeExceptionDao<Contact, Integer> getSimpleDataDao() {
     if (simpleRuntimeDao == null) {
       simpleRuntimeDao = getRuntimeExceptionDao(Contact.class);
     }
@@ -110,7 +89,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
    * Close the database connections and clear any cached DAOs.
    */
   @Override
-  public final void close() {
+  public void close() {
     super.close();
     simpleRuntimeDao = null;
   }
