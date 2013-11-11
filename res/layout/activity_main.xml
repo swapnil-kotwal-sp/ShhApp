@@ -5,18 +5,24 @@
     android:background="@drawable/green_grass"
     tools:context=".MainActivity" >
 
-    <LinearLayout
-        android:id="@+id/linearLayout1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+      <LinearLayout
+       android:id="@+id/linearLayout1"
+       android:layout_marginLeft="10sp"
+       android:layout_marginRight="10sp"
+       android:layout_marginTop="10sp"
+       android:layout_width="fill_parent"
+       android:layout_height="wrap_content" >
 
         <EditText
             android:id="@+id/viewSmsText"
-            android:layout_width="match_parent"
-            android:layout_height="121dp"
-            android:maxLength="500"
-            android:hint="Enter your sms body"
+            android:layout_width="0dip"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:lines="8"
+            android:background="#FFF"
+            android:gravity="top"
             android:imeActionLabel="launch" />
+			  
     </LinearLayout>
 
     <Button
