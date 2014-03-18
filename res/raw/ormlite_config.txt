@@ -1,0 +1,18 @@
+#
+# --table-start--
+dataClass=com.example.shhapp.Contact
+tableName=contact
+# --table-fields-start--
+# --field-start--
+fieldName=id
+generatedId=true
+# --field-end--
+# --field-start--
+fieldName=password
+# --field-end--
+# --field-start--
+fieldName=email
+# --field-end--
+# --table-fields-end--
+# --table-end--
+#################################

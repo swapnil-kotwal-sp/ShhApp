@@ -1,0 +1,110 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/green_grass"
+    tools:context=".MainActivity" >
+
+      <LinearLayout
+       android:id="@+id/linearLayout1"
+       android:layout_marginLeft="10sp"
+       android:layout_marginRight="10sp"
+       android:layout_marginTop="10sp"
+       android:layout_width="fill_parent"
+       android:layout_height="wrap_content" >
+
+        <EditText
+            android:id="@+id/viewSmsText"
+            android:layout_width="0dip"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:lines="8"
+            android:background="#FFF"
+            android:gravity="top"
+            android:imeActionLabel="launch" />
+			  
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btnDecrypt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/btnEncrptSms"
+        android:layout_alignBottom="@+id/btnEncrptSms"
+        android:layout_alignLeft="@+id/btnEmail"
+        android:layout_alignRight="@+id/btnSendSms"
+        android:text="Decrypt"
+        android:textColor="#FF00FF" />
+
+    <Button
+        android:id="@+id/btnReadEmail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/btnEmail"
+        android:layout_alignBottom="@+id/btnEmail"
+        android:layout_alignLeft="@+id/btnReadSms"
+        android:text="ReadEmail"
+        android:textColor="#FF00FF" />
+
+    <Button
+        android:id="@+id/btnEmail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignRight="@+id/btnSendSms"
+        android:layout_marginBottom="17dp"
+        android:text="SendMail"
+        android:textColor="#FF00FF" />
+
+    <Button
+        android:id="@+id/btnSendSms"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/btnReadSms"
+        android:layout_alignBottom="@+id/btnReadSms"
+        android:layout_marginLeft="35dp"
+        android:layout_toRightOf="@+id/btnReadEmail"
+        android:text="SendSms"
+        android:textColor="#FF00FF" />
+
+<!--         android:entries="@array/planets_array" -->
+
+    <Spinner
+        android:id="@+id/spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/linearLayout1"
+        android:layout_toLeftOf="@+id/btnSendSms"
+        android:prompt="@string/sms_prompt" />
+
+    <Spinner
+        android:id="@+id/Spinner01"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/spinner"
+        android:layout_toRightOf="@+id/spinner"
+        android:prompt="@string/sms_prompt" />
+
+    <Button
+        android:id="@+id/btnReadSms"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/btnReadEmail"
+        android:layout_alignLeft="@+id/btnEncrptSms"
+        android:layout_marginBottom="25dp"
+        android:text="ReadSms"
+        android:textColor="#FF00FF" />
+
+    <Button
+        android:id="@+id/btnEncrptSms"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/btnReadSms"
+        android:layout_alignParentLeft="true"
+        android:layout_marginBottom="32dp"
+        android:layout_marginLeft="31dp"
+        android:text="Encrypt"
+        android:textColor="#FF00FF" />
+
+</RelativeLayout>
